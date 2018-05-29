@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subjects</title>
+</head>
+<body>
+{% block content %}
+{% for subject in subjects %}
+<div>
+    <p>{{subject}}</p>
+</div>
+<br><br><br>
+{% endfor %}
+{% endblock %}
+</body>
+</html>
