@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 import datetime
 from apps.subject_controller.models import *
 
-
 # Create your tests here.
 
 class SubjectTestCase(TestCase):
@@ -131,3 +130,11 @@ class SubjectTestCase(TestCase):
         self.assertEqual(exam.subject.group.group_name, 'KNgr-14-1')
         self.assertEqual(exam.subject.group.curator, teacher)
         self.assertEqual(SubjectOfUnivGroup.objects.filter(group=univ_group).count(), 2)
+
+    def test_subject_views(self):
+        student = Student.objects.get(user=User.objects.get(username='test_student_1'))
+        group = student.univ_group
+        marks = SubjectMark.objects.filter(student=student)
+        subjects_marks = SubjectOfUnivGroup.objects.filter(subject__in=marks.values_list('subject'))
+        subjects_without_mark = SubjectOfUnivGroup.objects.exclude(pk__in=subjects_marks).filter(group=group)
+        self.assertEqual(subjects_without_mark.count(), 1)

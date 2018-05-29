@@ -30,12 +30,12 @@ class UnivGroup(models.Model):
         return str(self.group_name)
 
 
-
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     FIO = models.CharField(_(u'ФИО'),max_length=150)
     birth_date = models.DateField(null=True)
     t_number = models.CharField(_(u'Номер телефона'), max_length=10)
+    email = models.EmailField(_(u'Почта'), null=True, blank=True)
     univ_group = models.ForeignKey(UnivGroup, on_delete=models.SET_NULL, null=True)
 
     class Meta:

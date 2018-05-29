@@ -13,15 +13,15 @@ DAY_STATUS_CHOICES = (
 )
 LESSON_STATUS_CHOICES = [(i, i) for i in range(1, 9)]
 EURO_MARK = (
-    (1, 'A'),
-    (2, 'B'),
-    (3, 'C'),
-    (4, 'D'),
-    (5, 'E'),
-    (6, 'F'),
+    ('A', 'A'),
+    ('B', 'B'),
+    ('C', 'C'),
+    ('D', 'D'),
+    ('E', 'E'),
+    ('F', 'F'),
 )
 SIMPLE_MARK = [(i, i) for i in range(1, 6)]
-SEMESTER = [(i, i) for i in range(1, 12)]
+SEMESTER = [(i, i) for i in range(1, 9)]
 
 
 class Subject(models.Model):
@@ -84,8 +84,8 @@ class SubjectOfUnivGroup(models.Model):
 
 
 class WeekSchedule(models.Model):
-    day = models.CharField(choices=DAY_STATUS_CHOICES, default=1, max_length=15)
-    lesson_num = models.CharField(choices=LESSON_STATUS_CHOICES, default=1, max_length=2)
+    day = models.IntegerField(choices=DAY_STATUS_CHOICES, default=1)
+    lesson_num = models.IntegerField(choices=LESSON_STATUS_CHOICES, default=1)
     univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE)
     subject_numerator = models.ForeignKey(SubjectOfUnivGroup, related_name='числитель',
                                           on_delete=models.SET_NULL, null=True, blank=True, default=None)
@@ -119,8 +119,11 @@ class SubjectMark(models.Model):
     date = models.DateField(default=timezone.now)
     full_mark = models.IntegerField(default=100)
     simple_mark = models.IntegerField(choices=SIMPLE_MARK, default=5)
-    euro_mark = models.CharField(choices=EURO_MARK, default=1, max_length=1)
+    euro_mark = models.CharField(choices=EURO_MARK, default='A', max_length=1)
     na_status = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('student', 'subject')
+
+    def __str__(self):
+        return self.student.FIO + '_' + self.subject.subject.name + '_' + str(self.full_mark)
