@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load staticfiles %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -8,8 +8,8 @@
     <title>Profile</title>
 
     <!-- Bootstrap -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="bootstrap/css/style.css" rel="stylesheet">
+    <link href="{% static 'css/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -41,7 +41,7 @@
 				<div class="container-fluid" id="info">
 					<h4>Alexandr Gruziskiy</h4>
 					<div class="container-fluid">
-						<img src="default.jpg" class="img-thumbnail">
+						<img src="../static/default.jpg" class="img-thumbnail">
 					</div>
 					<div>
 						<h4><small>
@@ -54,63 +54,44 @@
 			</div>
 			<div class="row" id="choice">
 				 <div class="vertical-menu">
-					  <a href="index.html">Home</a>
-					  <a href="schadule.html" class="active">Расписание</a>
-					  <a href="#">Link 2</a>
+					  <a href="{% url 'schedule' %}">Расписание</a>
+					  <a href="{% url 'subject_list' %}" class="active">Список предметов</a>
 					  <a href="#">Link 3</a>
 					  <a href="#">Link 4</a>
-				</div> 
+					  <a href="#">Link 4</a>
+				</div>
 			</div>
 
 		</div>
 		<div class="col-sm-9">
-			<div class="container-fluid" id="schadule">
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Понедельник</h5>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Вторник</h5>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Среда</h5>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Четверг</h5>
-						</div>
-					</div>					
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Пятница</h5>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Суббота</h5>
-						</div>
-					</div>								
-				</div>
+			<div class="container-fluid">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">Предмет</th>
+							<th scope="col">Преподаватель</th>
+							<th scope="col">Семестр</th>
+							<th scope="col">Оценка</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for subject, mark in subjects_with_mark.items %}
+						<tr>
+							<td>{{ subject.subject.name }}</td>
+							<td>{{ subject.subject.teacher.FIO }}</td>
+							<td>{{ subject.semester }}</td>
+							<td>{{ mark }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
-	</div>
-</div>
 
 </div> <!-- /container full -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="bootstrap/js/bootstrap.js"></script>
   </body>
 </html>

@@ -1,5 +1,5 @@
 {% load staticfiles %}
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,8 +8,8 @@
     <title>Profile</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="{% static 'css/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -33,30 +33,29 @@
         </div>
       </div>
 
-{% block content %}
+
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-3" id="menu">
 			<div class="row">
 				<div class="container-fluid" id="info">
-					<h4>{{ student.FIO }}</h4>
+					<h4>Alexandr Gruziskiy</h4>
 					<div class="container-fluid">
-						<img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" class="img-thumbnail">
+						<img src="../static/default.jpg" class="img-thumbnail">
 					</div>
 					<div>
 						<h4><small>
-							<p>{{ student.univ_group }}</p>
-							<p>{{ student.t_number }}</p>
-							<p>{{ student.email }}</p>
-						</small>
-						</h4>
+							<p>Some Info</p>
+							<p>099900909</p>
+							<p>gruzinskiy.al@gmail.com</p>
+						</small></h4>
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" id="choice">
 				 <div class="vertical-menu">
+					  <a href="{% url 'schedule' %}" class="active">Расписание</a>
 					  <a href="{% url 'subject_list' %}">Список предметов</a>
-					  <a href="{% url 'test'%}"class="active">Расписание</a>
 					  <a href="#">Link 2</a>
 					  <a href="#">Link 3</a>
 					  <a href="#">Link 4</a>
@@ -65,53 +64,36 @@
 
 		</div>
 		<div class="col-sm-9">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Понедельник</h5>
-						</div>
+			<div class="container-fluid" id="schedule">
+
+
+
+					{% for day, nums in day_dict.items %}
+					<div class="container_fluid" id="schedule_day">
+						<h5>{{day}}</h5>
+					<table class="table table-striped">
+						<tbody>
+							{% for num, schedule in nums.items %}
+							<tr>
+								<td>{{num}}</td>
+								<td>{{schedule.subject}}</td>
+								<td>{{schedule.lecture_hall}}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
 					</div>
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Вторник</h5>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Среда</h5>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Четверг</h5>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Пятница</h5>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="container-fluid">
-							<h5>Суббота</h5>
-						</div>
-					</div>
-				</div>
-			</div>
+					{% endfor %}
+
+
+
+
 		</div>
 	</div>
 </div>
-{% endblock %}
-
 </div> <!-- /container full -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="bootstrap/js/bootstrap.js"></script>
   </body>
 </html>

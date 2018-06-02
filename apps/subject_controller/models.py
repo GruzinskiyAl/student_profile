@@ -4,12 +4,12 @@ from apps.main.models import Teacher, Student, UnivGroup
 from django.utils.translation import ugettext_lazy as _
 
 DAY_STATUS_CHOICES = (
-    (1, _(u'Monday')),
-    (2, _(u'Tuesday')),
-    (3, _(u'Wednesday')),
-    (4, _(u'Thursday')),
-    (5, _(u'Friday')),
-    (6, _(u'Saturday'))
+    ('Monday', _(u'Понедельник')),
+    ('Tuesday', _(u'Вторник')),
+    ('Wednesday', _(u'Среда')),
+    ('Thursday', _(u'Четверг')),
+    ('Friday', _(u'Пятница')),
+    ('Saturday', _(u'Суббота'))
 )
 LESSON_STATUS_CHOICES = [(i, i) for i in range(1, 9)]
 EURO_MARK = (
@@ -84,7 +84,7 @@ class SubjectOfUnivGroup(models.Model):
 
 
 class WeekSchedule(models.Model):
-    day = models.IntegerField(choices=DAY_STATUS_CHOICES, default=1)
+    day = models.CharField(choices=DAY_STATUS_CHOICES, default='Monday', max_length=10)
     lesson_num = models.IntegerField(choices=LESSON_STATUS_CHOICES, default=1)
     univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE)
     subject_numerator = models.ForeignKey(SubjectOfUnivGroup, related_name='числитель',
@@ -97,6 +97,9 @@ class WeekSchedule(models.Model):
         unique_together=('day',
                          'lesson_num',
                          'univ_group')
+
+    def __str__(self):
+        return str(self.univ_group) + '_' + str(self.day) + '_' + str(self.lesson_num)
 
 
 class GroupExam(models.Model):

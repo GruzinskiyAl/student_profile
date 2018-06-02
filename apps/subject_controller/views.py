@@ -13,13 +13,13 @@ class SubjectList(View):
             student = Student.objects.get(user=request.user)
             subjects = SubjectOfUnivGroup.objects.filter(group=student.univ_group)
             marks = SubjectMark.objects.filter(student=student)
-            subjects_with_marks = {}
+            subjects_with_mark = {}
             for subject in subjects:
                 try:
-                    subjects_with_marks[subject] = str(marks.get(subject=subject).full_mark)
+                    subjects_with_mark[subject] = str(marks.get(subject=subject).full_mark)
                 except SubjectMark.DoesNotExist:
-                    subjects_with_marks[subject] = 'N/A'
-            return render(request, 'index.html', {'subjects_with_marks': subjects_with_marks, 'student': student})
+                    subjects_with_mark[subject] = 'N/A'
+            return render(request, 'subject_list.html', {'subjects_with_mark': subjects_with_mark, 'student': student})
         except Student.DoesNotExist:
             return HttpResponse('NO')
 
@@ -43,12 +43,15 @@ class StudentSchedule(View):
         try:
             student = Student.objects.get(user=request.user)
             schedules = WeekSchedule.objects.filter(univ_group=student.univ_group)
-            s = {}
-            for day in schedules.value_list('day'):
-                for lesson in schedules.value_list('lesson_num'):
-                    a=1
-
-
-            return render(request, 'schedule.html', {'schedules': schedules, 'student': student})
-        except Student.DoesNotExist:
+            day_dict = {}
+            for day in schedules.values_list('day'):
+                num_dict = {}
+                for lesson in range(1, 9):
+                    try:
+                        num_dict[lesson] = schedules.get(day=day, lesson_num=lesson)
+                    except WeekSchedule.DoesNotExist:
+                        num_dict[lesson] = ''
+                day_dict[day] = num_dict
+            return render(request, 'schedule.html', {'day_dict': day_dict, 'student': student})
+        except (Student.DoesNotExist, ):
             return HttpResponse('NO')
