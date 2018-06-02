@@ -1,3 +1,3 @@
-.idea/
-.DS_Store/
-static/
+/.idea
+.DS_Store
+/static
