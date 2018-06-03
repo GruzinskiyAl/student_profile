@@ -36,7 +36,7 @@
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-sm-3" id="menu">
+		<div class="col-sm-2" id="menu">
 			<div class="row">
 				<div class="container-fluid" id="info">
 					<h4>Alexandr Gruziskiy</h4>
@@ -63,34 +63,34 @@
 			</div>
 
 		</div>
-		<div class="col-sm-9">
+		<div class="col-sm-10">
 			<div class="container-fluid" id="schedule">
+				{% for days in day_list %}
+					{% for day, data in days.items %}
+						<div class="col-sm-4">
+							<h5>{{day}}</h5>
+							<table class="table table-striped">
+								<tbody>
+									{% for num, schedule in data.items %}
+									<tr>
+										<td>{{num}}</td>
+										<td>
+											{{schedule.subject}}</p>
+										</td>
+										<td>
+											<p>{{schedule.place_numerator}}</p>
 
-
-
-					{% for day, nums in day_dict.items %}
-					<div class="container_fluid" id="schedule_day">
-						<h5>{{day}}</h5>
-					<table class="table table-striped">
-						<tbody>
-							{% for num, schedule in nums.items %}
-							<tr>
-								<td>{{num}}</td>
-								<td>{{schedule.subject}}</td>
-								<td>{{schedule.lecture_hall}}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-					</div>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
 					{% endfor %}
-
-
-
-
+				{% endfor %}
+			</div>
 		</div>
 	</div>
-</div>
 </div> <!-- /container full -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

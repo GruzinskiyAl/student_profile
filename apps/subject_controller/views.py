@@ -5,6 +5,7 @@ from django.contrib import auth
 from apps.subject_controller.models import (SubjectOfUnivGroup, SubjectMark,
                                             WeekSchedule)
 from apps.main.models import *
+from .to_dict_functions import schedule_for_template
 
 
 class SubjectList(View):
@@ -42,16 +43,8 @@ class StudentSchedule(View):
     def get(self, request):
         try:
             student = Student.objects.get(user=request.user)
-            schedules = WeekSchedule.objects.filter(univ_group=student.univ_group)
-            day_dict = {}
-            for day in schedules.values_list('day'):
-                num_dict = {}
-                for lesson in range(1, 9):
-                    try:
-                        num_dict[lesson] = schedules.get(day=day, lesson_num=lesson)
-                    except WeekSchedule.DoesNotExist:
-                        num_dict[lesson] = ''
-                day_dict[day] = num_dict
-            return render(request, 'schedule.html', {'day_dict': day_dict, 'student': student})
+            schedules_queryset = WeekSchedule.objects.filter(univ_group=student.univ_group)
+            return render(request, 'schedule.html', {'day_list': schedule_for_template(schedules_queryset),
+                                                     'student': student})
         except (Student.DoesNotExist, ):
             return HttpResponse('NO')

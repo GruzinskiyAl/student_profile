@@ -1,4 +1,4 @@
-#!/Users/gruzinskiy/Documents/PyCharm_Projects/student_profile/env/bin/python
+#!/home/gruzinskiy/PycharmProjects/student_profile/env/bin/python
 
 import sys
 import getopt
