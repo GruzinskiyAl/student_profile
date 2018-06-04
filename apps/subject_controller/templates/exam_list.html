@@ -55,8 +55,8 @@
 				<div class="row" id="choice">
 					 <div class="vertical-menu">
 						  <a href="{% url 'schedule' %}" >Расписание</a>
-						  <a href="{% url 'subject_list' %}" class="active">Список предметов</a>
-						  <a href="{% url 'exam_list' %}">Список экзаменов</a>
+						  <a href="{% url 'subject_list' %}" >Список предметов</a>
+						  <a href="{% url 'exam_list' %}" class="active">Список экзаменов</a>
 						  <a href="#">Link 3</a>
 						  <a href="#">Link 4</a>
 					</div>
@@ -70,20 +70,18 @@
 						<tr>
 							<th scope="col">Предмет</th>
 							<th scope="col">Преподаватель</th>
-							<th scope="col">Семестр</th>
-							<th scope="col">Дата окончания</th>
-							<th scope="col">Оценка</th>
+							<th scope="col">Аудитория</th>
+							<th scope="col">Дата / Время</th>
 						</tr>
 					</thead>
 					<tbody>
-					{% for subject, mark in subjects_with_mark.items %}
+					{% for exam in exam_list %}
 						<tr>
-							<td><a href="{% url 'subject_material' subject_pk=subject.subject.pk %}"> {{ subject.subject.name }} </a></td>
-							<td>{{ subject.subject.teacher.last_name }} {{subject.subject.teacher.first_name}}
-								{{subject.subject.teacher.patronymic}}</td>
-							<td>{{ subject.semester }}</td>
-							<td>{{subject.closing_date}}</td>
-							<td>{{ mark }}</td>
+							<td>{{ exam.subject.subject.name }}</td>
+							<td>{{ exam.subject.subject.teacher.last_name }} {{exam.subject.subject.teacher.first_name}}
+								{{ subject.subject.teacher.patronymic }}</td>
+							<td>{{ exam.lecture_hall }}</td>
+							<td>{{exam.exam_datetime}}</td>
 						</tr>
 					{% endfor %}
 					</tbody>

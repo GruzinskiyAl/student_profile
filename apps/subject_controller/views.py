@@ -1,11 +1,12 @@
+from datetime import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
 from django.contrib import auth
 from apps.subject_controller.models import (SubjectOfUnivGroup, SubjectMark,
-                                            WeekSchedule)
+                                            WeekSchedule, GroupExam, Subject)
 from apps.main.models import *
-from .to_dict_functions import schedule_for_template
+from .to_dict_functions import schedule_for_template, subject_materials_for_template
 
 
 class SubjectList(View):
@@ -46,5 +47,33 @@ class StudentSchedule(View):
             schedules_queryset = WeekSchedule.objects.filter(univ_group=student.univ_group)
             return render(request, 'schedule.html', {'day_list': schedule_for_template(schedules_queryset),
                                                      'student': student})
-        except (Student.DoesNotExist, ):
+        except (Student.DoesNotExist,):
+            return HttpResponse('NO')
+
+
+class GroupExamList(View):
+
+    def get(self, request):
+        try:
+            student = Student.objects.get(user=request.user)
+            exam_list = GroupExam.objects.filter(univ_group=student.univ_group,
+                                                 exam_datetime__gt=datetime.now())
+            return render(request, 'exam_list.html', {'student': student, 'exam_list': exam_list})
+        except (Student.DoesNotExist,):
+            return HttpResponse('NO')
+
+
+class SubjectMaterial(View):
+
+    def get(self, request, subject_pk):
+        try:
+            student = Student.objects.get(user=request.user)
+            subject = Subject.objects.get(pk=subject_pk)
+            labs, lectures, literature, other = subject_materials_for_template(subject)
+            return render(request, 'subject_material.html', {'labs': labs,
+                                                             'lectures': lectures,
+                                                             'literature': literature,
+                                                             'other': other,
+                                                             'student': student})
+        except (Student.DoesNotExist,):
             return HttpResponse('NO')

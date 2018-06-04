@@ -34,60 +34,60 @@
       </div>
 
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-2" id="menu">
-			<div class="row">
-				<div class="container-fluid" id="info">
-					<h4>Alexandr Gruziskiy</h4>
-					<div class="container-fluid">
-						<img src="../static/default.jpg" class="img-thumbnail">
-					</div>
-					<div>
-						<h4><small>
-							<p>Some Info</p>
-							<p>099900909</p>
-							<p>gruzinskiy.al@gmail.com</p>
-						</small></h4>
-					</div>
-				</div>
-			</div>
-			<div class="row" id="choice">
-				 <div class="vertical-menu">
-					  <a href="{% url 'schedule' %}" class="active">Расписание</a>
-					  <a href="{% url 'subject_list' %}">Список предметов</a>
-					  <a href="#">Link 2</a>
-					  <a href="#">Link 3</a>
-					  <a href="#">Link 4</a>
-				</div>
-			</div>
-
-		</div>
-		<div class="col-sm-10">
-			<div class="container-fluid" id="schedule">
-				{% for days in day_list %}
-					{% for day, data in days.items %}
-						<div class="col-sm-4">
-							<h5>{{day}}</h5>
-							<table class="table table-striped">
-								<tbody>
-									{% for num, schedule in data.items %}
-									<tr>
-										<td>{{num}}</td>
-										<td>
-											{{schedule.subject}}</p>
-										</td>
-										<td>
-											<p>{{schedule.place_numerator}}</p>
-
-										</td>
-									</tr>
-									{% endfor %}
-								</tbody>
-							</table>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3" id="menu">
+				<div class="row">
+					<div class="container-fluid" id="info">
+						<h4>{{ student.first_name }} {{student.last_name}}</h4>
+						<div class="container-fluid">
+							<img src="../static/default.jpg" class="img-thumbnail">
 						</div>
+						<div>
+							<h4><small>
+								<p>{{student.univ_group}}</p>
+								<p>{{student.t_number}}</p>
+								<p>{{student.email}}</p>
+							</small></h4>
+						</div>
+					</div>
+				</div>
+				<div class="row" id="choice">
+					 <div class="vertical-menu">
+						  <a href="{% url 'schedule' %}" class="active">Расписание</a>
+						  <a href="{% url 'subject_list' %}">Список предметов</a>
+						  <a href="{% url 'exam_list' %}">Список экзаменов</a>
+						  <a href="#">Link 3</a>
+						  <a href="#">Link 4</a>
+					</div>
+				</div>
+
+			</div>
+			<div class="col-sm-9">
+				<div class="container-fluid" id="schedule">
+					{% for days in day_list %}
+						{% for day, data in days.items %}
+							<div>
+								<h5>{{day}}</h5>
+								<table class="table table-striped">
+									<tbody>
+										{% for num, schedule in data.items %}
+										<tr>
+											<td>{{num}}</td>
+											<td>
+												{{schedule.subject_num}}
+											</td>
+											<td>
+												{{schedule.subject_denom}}
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						{% endfor %}
 					{% endfor %}
-				{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
