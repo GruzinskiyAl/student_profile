@@ -41,7 +41,7 @@
 					<div class="container-fluid" id="info">
 						<h4>{{ student.first_name }} {{student.last_name}}</h4>
 						<div class="container-fluid">
-							<img src="../static/default.jpg" class="img-thumbnail">
+							<img src="{{ student.photo.url }}" class="img-thumbnail"/>
 						</div>
 						<div>
 							<h4><small>

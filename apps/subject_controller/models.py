@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from django.db import models
 from django.utils import timezone
 from apps.main.models import Teacher, Student, UnivGroup
