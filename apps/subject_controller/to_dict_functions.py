@@ -52,4 +52,4 @@ def subject_materials_for_template(group_subject_object):
     lectures = SubjectLecture.objects.filter(subject=group_subject_object)
     literature = SubjectLiterature.objects.filter(subject=group_subject_object)
     material = SubjectAdditionalMaterial.objects.filter(subject=group_subject_object)
-    return labs, literature, lectures, material
+    return labs, lectures, literature, material

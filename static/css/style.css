@@ -56,6 +56,10 @@
 	padding: 2px;
 }
 
-#schadule{
+#schedule{
 	text-align: center;
+}
+
+#schedule table {
+    padding:10px
 }

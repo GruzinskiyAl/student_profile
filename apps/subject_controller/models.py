@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from django.db import models
 from django.utils import timezone
 from apps.main.models import Teacher, Student, UnivGroup
@@ -39,26 +40,35 @@ class SubjectLiterature(models.Model):
     literature = models.TextField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
+
     def __str__(self):
-        return str(self.subject)
+        return str(self.subject.name)
 
 
 class SubjectLecture(models.Model):
+    name = models.CharField(max_length=256, default='Лекция')
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     lecture_url = models.URLField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
+    class Meta:
+        ordering = ['pk', ]
+
     def __str__(self):
-        return str(self.subject)
+        return str(self.subject.name)
 
 
 class SubjectLab(models.Model):
+    name = models.CharField(max_length=256, default='Лабораторная работа')
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     lab_url = models.URLField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
+    class Meta:
+        ordering = ['pk', ]
+
     def __str__(self):
-        return str(self.subject)
+        return str(self.subject.name)
 
 
 class SubjectAdditionalMaterial(models.Model):
@@ -67,7 +77,7 @@ class SubjectAdditionalMaterial(models.Model):
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     def __str__(self):
-        return str(self.subject)
+        return str(self.subject.name)
 
 
 class SubjectOfUnivGroup(models.Model):
@@ -82,7 +92,7 @@ class SubjectOfUnivGroup(models.Model):
         ordering = ['semester', ]
 
     def __str__(self):
-        return str(self.group) + '_' + str(self.subject)
+        return str(self.group.name) + '_' + str(self.subject.name)
 
 
 class WeekSchedule(models.Model):
@@ -103,7 +113,7 @@ class WeekSchedule(models.Model):
         ordering = ['day']
 
     def __str__(self):
-        return str(self.univ_group) + '_' + str(self.day) + '_' + str(self.lesson_num)
+        return str(self.univ_group.name) + '_' + str(self.day) + '_' + str(self.lesson_num)
 
 
 class GroupExam(models.Model):
@@ -116,7 +126,7 @@ class GroupExam(models.Model):
         unique_together = ('subject', 'univ_group')
 
     def __str__(self):
-        return str(self.subject) + '_' + str(self.exam_datetime)
+        return str(self.subject.name) + '_' + str(self.exam_datetime)
 
 
 class SubjectMark(models.Model):
@@ -133,4 +143,4 @@ class SubjectMark(models.Model):
         unique_together = ('student', 'subject')
 
     def __str__(self):
-        return self.student.FIO + '_' + self.subject.subject.name + '_' + str(self.full_mark)
+        return self.student.last_name + '_' + self.subject.subject.name + '_' + str(self.full_mark)

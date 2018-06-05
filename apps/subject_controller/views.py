@@ -69,11 +69,18 @@ class SubjectMaterial(View):
         try:
             student = Student.objects.get(user=request.user)
             subject = Subject.objects.get(pk=subject_pk)
-            labs, lectures, literature, other = subject_materials_for_template(subject)
+            labs, lectures, literature_list, materials = subject_materials_for_template(subject)
             return render(request, 'subject_material.html', {'labs': labs,
                                                              'lectures': lectures,
-                                                             'literature': literature,
-                                                             'other': other,
-                                                             'student': student})
+                                                             'literature_list': literature_list,
+                                                             'materials': materials,
+                                                             'student': student,
+                                                             'subject': subject})
         except (Student.DoesNotExist,):
             return HttpResponse('NO')
+
+
+class LoginUser(View):
+
+    def post(self, request, login, password):
+        return
