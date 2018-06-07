@@ -28,7 +28,7 @@
         </div>
         <div class="container">
         <ul class="nav navbar-nav navbar-right">
-          <li><a class="navbar-brand" href="#">Logout</a></li>
+          <li><a class="navbar-brand" href="{% url 'logout' %}">Logout</a></li>
         </ul>
         </div>
       </div>
@@ -39,9 +39,13 @@
 			<div class="col-sm-3" id="menu">
 				<div class="row">
 					<div class="container-fluid" id="info">
-						<h4>{{ student.first_name }} {{student.last_name}}</h4>
+						<h4>{{ student.first_name }} {{student.last_name}} {{student.patronymic}}</h4>
 						<div class="container-fluid">
+							{% if student.photo %}
 							<img src="{{ student.photo.url }}" class="img-thumbnail"/>
+							{% else %}
+							<img src="{% static 'user.png' %}" class="img-thumbnail"/>
+							{% endif %}
 						</div>
 						<div>
 							<h4><small>

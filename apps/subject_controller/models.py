@@ -92,7 +92,7 @@ class SubjectOfUnivGroup(models.Model):
         ordering = ['semester', ]
 
     def __str__(self):
-        return str(self.group.name) + '_' + str(self.subject.name)
+        return str(self.subject.name) + '_' + str(self.group.group_name)
 
 
 class WeekSchedule(models.Model):

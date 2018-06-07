@@ -32,11 +32,11 @@ def schedule_for_template(schedule_queryset):
                 schedule_obj = schedule_queryset.get(day=en_day, lesson_num=lesson)
                 if schedule_obj.subject_numerator:
                     subject_num = 'Чс: ' + schedule_obj.subject_numerator.subject.name
-                    subject_num += ' ' + str(schedule_obj.subject_numerator.subject.teacher.full_name())
+                    subject_num += ' ' + str(schedule_obj.subject_numerator.subject.teacher.name_initials_string())
                     subject_num += ' ' + str(schedule_obj.lecture_hall_numerator)
                 if schedule_obj.subject_denominator:
                     subject_denom = subject_denom + ' Зн: ' + schedule_obj.subject_denominator.subject.name
-                    subject_denom += ' ' + str(schedule_obj.subject_denominator.subject.teacher.full_name())
+                    subject_denom += ' ' + str(schedule_obj.subject_denominator.subject.teacher.name_initials_string())
                     subject_denom += ' ' + str(schedule_obj.lecture_hall_denominator)
                 num_dict[lesson] = {'subject_num': subject_num,
                                     'subject_denom': subject_denom}

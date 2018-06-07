@@ -16,11 +16,10 @@ class Teacher(models.Model):
     photo = models.ImageField(upload_to='user_media', null=True, blank=True)
 
     def __str__(self):
-        return str(self.pk) + '_' + str(self.last_name) + '_' + str(self.first_name)
+        return str(self.last_name) + '_' + str(self.first_name) + '_' + str(self.pk)
 
-    def full_name(self):
-        return self.last_name + ' ' + self.first_name
-
+    def name_initials_string(self):
+        return self.last_name + ' ' + self.first_name[0] + '.' + ' ' + self.patronymic[0] + '.'
 
 class UnivGroup(models.Model):
     group_name = models.CharField(_(u'Название'), max_length=15, unique=True)
@@ -52,5 +51,5 @@ class Student(models.Model):
         ordering = ['univ_group']
 
     def __str__(self):
-        return str(self.pk) + '_' + str(self.last_name) + '_' + str(self.first_name)
+        return str(self.last_name) + '_' + str(self.first_name)  + '_' + str(self.pk)
 
