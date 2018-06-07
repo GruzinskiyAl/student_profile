@@ -1,12 +1,13 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.views import View
 from apps.subject_controller.models import (SubjectOfUnivGroup, SubjectMark,
                                             WeekSchedule, GroupExam, Subject)
 from apps.main.models import *
 from .to_dict_functions import schedule_for_template, subject_materials_for_template
-
+from .forms import ImageForm
 
 class SubjectList(View):
     def get(self, request):
@@ -93,3 +94,24 @@ class SubjectMaterial(View):
                 return redirect('/login/')
         else:
             return redirect('/login/')
+
+
+class UserPhotoSelect(View):
+
+    def post(self, request):
+        form = ImageForm(request.POST, request.FILES)
+        user = request.user
+        try:
+            student = Student.objects.get(user=user)
+            if form.is_valid():
+                student.photo=request.FILES['image']
+                student.save()
+                return HttpResponseRedirect(reverse('/'))
+        except Student.DoesNotExist:
+            try:
+                teacher = Teacher.objects.get(user=user)
+                teacher.photo=request.FILES['image']
+                teacher.save()
+                return HttpResponseRedirect(reverse('/'))
+            except Teacher.DoesNotExist:
+                return redirect('/login/')
