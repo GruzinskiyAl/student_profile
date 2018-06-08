@@ -3,11 +3,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
 from django.contrib import auth
-from apps.subject_controller.models import (SubjectOfUnivGroup, SubjectMark,
-                                            WeekSchedule)
+
 from apps.main.models import *
-from .models import (SubjectOfUnivGroup, SubjectAdditionalMaterial,
-                     SubjectLab, SubjectLecture, SubjectLiterature)
+from .models import *
 
 
 DAY_STATUS_CHOICES = (
@@ -53,3 +51,15 @@ def subject_materials_for_template(group_subject_object):
     literature = SubjectLiterature.objects.filter(subject=group_subject_object)
     material = SubjectAdditionalMaterial.objects.filter(subject=group_subject_object)
     return labs, lectures, literature, material
+
+
+def subject_list_with_marks(student):
+    subjects = SubjectOfUnivGroup.objects.filter(group=student.univ_group)
+    marks = ExamSubjectMark.objects.filter(student=student)
+    subjects_with_marks = {}
+    for subject in subjects:
+        marks_list = ''
+        for mark in marks.filter(subject=subject).values_list('full_mark'):
+            marks_list += str(mark[0]) + ', '
+        subjects_with_marks[subject] = marks_list
+    return subjects_with_marks

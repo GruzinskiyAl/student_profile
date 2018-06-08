@@ -3,26 +3,23 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
-from apps.subject_controller.models import (SubjectOfUnivGroup, SubjectMark,
-                                            WeekSchedule, GroupExam, Subject)
+from apps.subject_controller.models import (SubjectOfUnivGroup, ExamSubjectMark,
+                                            WeekSchedule, GroupExam, Subject,
+                                            StudentSubjectMark)
 from apps.main.models import *
-from .to_dict_functions import schedule_for_template, subject_materials_for_template
+from .to_dict_functions import (schedule_for_template,
+                                subject_materials_for_template,
+                                subject_list_with_marks)
 from .forms import ImageForm
+
 
 class SubjectList(View):
     def get(self, request):
         if request.user.is_authenticated:
             try:
                 student = Student.objects.get(user=request.user)
-                subjects = SubjectOfUnivGroup.objects.filter(group=student.univ_group)
-                marks = SubjectMark.objects.filter(student=student)
-                subjects_with_mark = {}
-                for subject in subjects:
-                    try:
-                        subjects_with_mark[subject] = str(marks.get(subject=subject).full_mark)
-                    except SubjectMark.DoesNotExist:
-                        subjects_with_mark[subject] = 'N/A'
-                return render(request, 'subject_list.html', {'subjects_with_mark': subjects_with_mark, 'student': student})
+                subjects_dict = subject_list_with_marks(student)
+                return render(request, 'subject_list.html', {'subjects_with_mark': subjects_dict, 'student': student})
             except Student.DoesNotExist:
                 return redirect('/login/')
         else:
@@ -36,7 +33,7 @@ class SubjectDebtList(View):
             try:
                 student = Student.objects.get(user=request.user)
                 group = student.univ_group
-                marks = SubjectMark.objects.filter(student=student)
+                marks = ExamSubjectMark.objects.filter(student=student)
                 subjects_marks = SubjectOfUnivGroup.objects.filter(subject__in=marks.values_list('subject'))
                 subjects = SubjectOfUnivGroup.objects.exclude(pk__in=subjects_marks).filter(group=group)
                 return render(request, 'debt.html', {'subjects': subjects})
@@ -115,3 +112,20 @@ class UserPhotoSelect(View):
                 return HttpResponseRedirect(reverse('/'))
             except Teacher.DoesNotExist:
                 return redirect('/login/')
+
+
+class StudentMarkBySubject(View):
+
+    def get(self, request, subject_pk):
+        if request.user.is_authenticated:
+            try:
+                student = Student.objects.get(user=request.user)
+                subject = SubjectOfUnivGroup.objects.get(pk=subject_pk)
+                marks = StudentSubjectMark.objects.filter(student=student, subject=subject)
+                return render(request, 'subject_marks.html', {'student':student,
+                                                              'marks': marks,
+                                                              'subject': subject})
+            except Student.DoesNotExist:
+                return redirect('/login/')
+        else:
+            return redirect('/login/')

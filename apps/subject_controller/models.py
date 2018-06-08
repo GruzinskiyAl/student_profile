@@ -1,9 +1,11 @@
 # coding=utf-8
-
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from apps.main.models import Teacher, Student, UnivGroup
 from django.utils.translation import ugettext_lazy as _
+from .models_methods import mark_generation
+
 
 DAY_STATUS_CHOICES = (
     ('Monday', _(u'Понедельник')),
@@ -23,36 +25,45 @@ EURO_MARK = (
     ('F', 'F'),
 )
 SIMPLE_MARK = [(i, i) for i in range(1, 6)]
-SEMESTER = [(i, i) for i in range(1, 9)]
+SEMESTER = [(i, i) for i in [x * 0.5 for x in range(1, 9)]]
 
 
 class Subject(models.Model):
     name = models.CharField(_(u'Название'), max_length=300, unique=True)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=u'Преподаватель')
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     def __str__(self):
         return str(self.name)
 
+    class Meta:
+        verbose_name_plural = 'Предмет'
+        verbose_name = 'Предметы'
+
 
 class SubjectLiterature(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    literature = models.TextField(null=True, blank=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    literature = models.TextField(_(u'Литература'),null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
-
 
     def __str__(self):
         return str(self.subject.name)
 
+    class Meta:
+        verbose_name_plural = 'Литература предмета'
+        verbose_name = 'Литература предмета'
+
 
 class SubjectLecture(models.Model):
     name = models.CharField(max_length=256, default='Лекция')
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
     lecture_url = models.URLField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     class Meta:
         ordering = ['pk', ]
+        verbose_name_plural = 'Список лекций'
+        verbose_name = 'Лекция'
 
     def __str__(self):
         return str(self.subject.name)
@@ -60,48 +71,57 @@ class SubjectLecture(models.Model):
 
 class SubjectLab(models.Model):
     name = models.CharField(max_length=256, default='Лабораторная работа')
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
     lab_url = models.URLField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     class Meta:
         ordering = ['pk', ]
+        verbose_name_plural = 'Список лабораторных работ'
+        verbose_name = 'Лабораторная работа'
 
     def __str__(self):
         return str(self.subject.name)
 
 
 class SubjectAdditionalMaterial(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    additional_material = models.TextField(null=True, blank=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    additional_material = models.TextField(null=True, blank=True, verbose_name=u'Материалы')
     description = models.TextField(_(u'Описание'), null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Дополнительные материалы'
+        verbose_name = 'Дополнительные материалы'
 
     def __str__(self):
         return str(self.subject.name)
 
 
 class SubjectOfUnivGroup(models.Model):
-    group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    semester = models.IntegerField(choices=SEMESTER, default=1)
-    closing_date = models.DateField(default=timezone.now)
-    hours_count = models.IntegerField(default=100)
+    group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    start_semester = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Начальный семестр')
+    semester_quantity = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Количество семестров')
+    closing_date = models.DateField(default=timezone.now, verbose_name=u'Дата окончания')
+    hours_count = models.IntegerField(default=100, verbose_name=u'Количество часов')
 
     class Meta:
         unique_together = ('group', 'subject')
-        ordering = ['semester', ]
+        ordering = ['start_semester', ]
+        verbose_name_plural = 'Предметы группы'
+        verbose_name = 'Предмет группы'
 
     def __str__(self):
         return str(self.subject.name) + '_' + str(self.group.group_name)
 
 
 class WeekSchedule(models.Model):
-    day = models.CharField(choices=DAY_STATUS_CHOICES, default='Monday', max_length=20)
-    lesson_num = models.IntegerField(choices=LESSON_STATUS_CHOICES, default=1)
-    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE)
-    subject_numerator = models.ForeignKey(SubjectOfUnivGroup, related_name='числитель',
+    day = models.CharField(choices=DAY_STATUS_CHOICES, default='Monday', max_length=20, verbose_name=u'День недели')
+    lesson_num = models.IntegerField(choices=LESSON_STATUS_CHOICES, default=1, verbose_name=u'Номер ленты')
+    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
+    subject_numerator = models.ForeignKey(SubjectOfUnivGroup, related_name=u'числитель',
                                           on_delete=models.SET_NULL, null=True, blank=True, default=None)
-    subject_denominator = models.ForeignKey(SubjectOfUnivGroup, related_name='знаменатель',
+    subject_denominator = models.ForeignKey(SubjectOfUnivGroup, related_name=u'знаменатель',
                                             on_delete=models.SET_NULL, null=True, blank=True, default=None)
     lecture_hall_numerator = models.CharField(_(u'Аудитория чис'), max_length=50, null=True, blank=True)
     lecture_hall_denominator = models.CharField(_(u'Аудитория знам'), max_length=50, null=True, blank=True)
@@ -111,36 +131,76 @@ class WeekSchedule(models.Model):
                            'lesson_num',
                            'univ_group')
         ordering = ['day']
+        verbose_name_plural = 'Элементы расписания'
+        verbose_name = 'Элемент расписания'
 
     def __str__(self):
         return str(self.univ_group.name) + '_' + str(self.day) + '_' + str(self.lesson_num)
 
 
 class GroupExam(models.Model):
-    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE)
-    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE)
-    exam_datetime = models.DateTimeField(default=timezone.now)
+    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
+    exam_datetime = models.DateTimeField(default=timezone.now, verbose_name=u'Дата и время')
     lecture_hall = models.CharField(_(u'Аудитория'), max_length=50)
 
     class Meta:
+        verbose_name_plural = 'Список экзаменов'
+        verbose_name = 'Экзамен'
         unique_together = ('subject', 'univ_group')
 
     def __str__(self):
         return str(self.subject.name) + '_' + str(self.exam_datetime)
 
 
-class SubjectMark(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    date = models.DateField(default=timezone.now)
-    full_mark = models.IntegerField(default=100)
-    simple_mark = models.IntegerField(choices=SIMPLE_MARK, default=5)
-    euro_mark = models.CharField(choices=EURO_MARK, default='A', max_length=1)
-    na_status = models.BooleanField(default=True)
+class ExamSubjectMark(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=u'Студент')
+    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=u'Преподаватель')
+    date = models.DateField(default=timezone.now, verbose_name=u'Дата')
+    full_mark = models.IntegerField(default=1,
+                                    validators=[
+                                        MaxValueValidator(100),
+                                        MinValueValidator(1)
+                                    ], verbose_name=u'Оценка')
+    simple_mark = models.IntegerField(choices=SIMPLE_MARK, default=5, verbose_name=u'Упрощенная оценка')
+    euro_mark = models.CharField(choices=EURO_MARK, default='A', max_length=1, verbose_name=u'EU оценка')
 
     class Meta:
-        unique_together = ('student', 'subject')
+        unique_together = ('student', 'subject', 'date')
+        verbose_name_plural = 'Оценоки по экзаменам'
+        verbose_name = 'Оценка по экзамену'
 
     def __str__(self):
         return self.student.last_name + '_' + self.subject.subject.name + '_' + str(self.full_mark)
+
+    def __init__(self, *args, **kwargs):
+        super(ExamSubjectMark, self).__init__(*args, **kwargs)
+        self.set_mark()
+
+    def set_mark(self):
+        self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
+
+
+class StudentSubjectMark(models.Model):
+    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=u'Студент')
+    date = models.DateField(auto_now_add=True, verbose_name=u'Дата')
+    semester = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Семестр')
+    full_mark = models.IntegerField(default=100, verbose_name=u'Оценка')
+    simple_mark = models.IntegerField(choices=SIMPLE_MARK, default=5, verbose_name=u'Упрощенная оценка')
+    euro_mark = models.CharField(choices=EURO_MARK, default='A', max_length=1, verbose_name=u'EU оценка')
+
+    class Meta:
+        verbose_name_plural = 'Оценки'
+        verbose_name = 'Оценка'
+        unique_together = ['student', 'subject', 'semester']
+        ordering = ['semester']
+
+    def __init__(self, *args, **kwargs):
+        super(StudentSubjectMark, self).__init__(*args, **kwargs)
+        self.set_mark()
+
+    def set_mark(self):
+        self.simple_mark, self.euro_mark = mark_generation(self.full_mark)

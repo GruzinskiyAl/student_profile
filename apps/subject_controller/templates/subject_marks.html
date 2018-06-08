@@ -69,32 +69,26 @@
 		</div>
 		<div class="col-sm-9">
 			<div class="container-fluid">
+                <h2> {{subject.subject.name}} </h2>
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th scope="col">Предмет</th>
+							<th scope="col">Дата</th>
 							<th scope="col">Преподаватель</th>
-							<th scope="col">Семестр начала</th>
-							<th scope="col">Количество семестров</th>
-							<th scope="col">Дата окончания</th>
-							<th scope="col">Итоговый бал</th>
+							<th scope="col">Оценка</th>
+							<th scope="col">Упрощенная оценка</th>
+							<th scope="col">EU оценка</th>
 						</tr>
 					</thead>
 					<tbody>
-					{% for subject, marks in subjects_with_mark.items %}
+					{% for mark in marks %}
 						<tr>
-							<td><a href="{% url 'subject_marks' subject_pk=subject.pk %}">{{ subject.subject.name }}</a></td>
+							<td>{{ mark.date }}</td>
 							<td>{{ subject.subject.teacher.last_name }} {{subject.subject.teacher.first_name}}
 								{{subject.subject.teacher.patronymic}}</td>
-							<td>{{ subject.start_semester }}</td>
-							<td>{{ subject.semester_quantity }}</td>
-							<td>{{subject.closing_date}}</td>
-							{% if marks %}
-							<td>{{ marks }}</td>
-							{% else %}
-							<td> </td>
-							{% endif %}
-							<td><a href="{% url 'subject_material' subject_pk=subject.subject.pk %}"> <h6>Материалы</h6></a></td>
+							<td>{{ mark.full_mark }}</td>
+							<td>{{ mark.simple_mark }}</td>
+							<td>{{ mark.full_mark}}</td>
 						</tr>
 					{% endfor %}
 					</tbody>

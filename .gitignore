@@ -1,5 +1,10 @@
 .idea/
 .DS_Store
-__pycache__/
-.env/
+*.pyc
+*.pyman
+*.pyo
+__pycache__
+.deps
+.libs
+/_build/
 env/
