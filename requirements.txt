@@ -7,3 +7,6 @@ psycopg2==2.7.3.2
 pytz==2018.4
 requests==2.18.4
 urllib3==1.22
+django-google-charts-0.1.1
+django-qsstats-magic-1.0.0
+python-dateutil-2.7.3

@@ -63,3 +63,41 @@ def subject_list_with_marks(student):
             marks_list += str(mark[0]) + ', '
         subjects_with_marks[subject] = marks_list
     return subjects_with_marks
+
+
+def chart_marks_data(student):
+    data = []
+    student_marks = StudentSubjectMark.objects.filter(student=student)
+    for i, i in SEMESTER:
+        semester_marks = student_marks.filter(semester=i)
+        value = 0
+        for mark in semester_marks.values_list('full_mark'):
+            value += int(mark[0])
+        if semester_marks.count() != 0:
+            middle = round(value/semester_marks.count(), 2)
+            data.append([str(i) + u' семестр', middle])
+    return data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

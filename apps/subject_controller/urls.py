@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.conf.urls.static import static
 
-from .views import (SubjectList, SubjectDebtList,
+from .views import (SubjectList, TeacherMessages,
                     StudentSchedule, GroupExamList,
                     SubjectMaterial, UserPhotoSelect,
-                    StudentMarkBySubject)
+                    StudentMarkBySubject,
+                    StudentMarksChart)
 from django.conf.urls import url, include
 
 urlpatterns = [
@@ -14,7 +15,8 @@ urlpatterns = [
         SubjectMaterial.as_view(), name='subject_material'),
     url(r'^subjects/marks/(?P<subject_pk>\d+)/$',
         StudentMarkBySubject.as_view(), name='subject_marks'),
-    url(r'^debt/$', SubjectDebtList.as_view(), name='debt_list'),
+    url(r'^progress/$', StudentMarksChart.as_view(), name='marks_chart'),
+    url(r'^messages/$', TeacherMessages.as_view(), name='messages'),
     url(r'^exams/$', GroupExamList.as_view(), name='exam_list'),
     url(r'^photo/change/$', UserPhotoSelect.as_view(), name='change_photo')
 

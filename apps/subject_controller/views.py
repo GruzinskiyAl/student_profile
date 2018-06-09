@@ -5,11 +5,12 @@ from django.urls import reverse
 from django.views import View
 from apps.subject_controller.models import (SubjectOfUnivGroup, ExamSubjectMark,
                                             WeekSchedule, GroupExam, Subject,
-                                            StudentSubjectMark)
+                                            StudentSubjectMark, TeacherMessage)
 from apps.main.models import *
 from .to_dict_functions import (schedule_for_template,
                                 subject_materials_for_template,
-                                subject_list_with_marks)
+                                subject_list_with_marks,
+                                chart_marks_data)
 from .forms import ImageForm
 
 
@@ -20,23 +21,6 @@ class SubjectList(View):
                 student = Student.objects.get(user=request.user)
                 subjects_dict = subject_list_with_marks(student)
                 return render(request, 'subject_list.html', {'subjects_with_mark': subjects_dict, 'student': student})
-            except Student.DoesNotExist:
-                return redirect('/login/')
-        else:
-            return redirect('/login/')
-
-
-class SubjectDebtList(View):
-
-    def get(self, request):
-        if request.user.is_authenticated:
-            try:
-                student = Student.objects.get(user=request.user)
-                group = student.univ_group
-                marks = ExamSubjectMark.objects.filter(student=student)
-                subjects_marks = SubjectOfUnivGroup.objects.filter(subject__in=marks.values_list('subject'))
-                subjects = SubjectOfUnivGroup.objects.exclude(pk__in=subjects_marks).filter(group=group)
-                return render(request, 'debt.html', {'subjects': subjects})
             except Student.DoesNotExist:
                 return redirect('/login/')
         else:
@@ -101,13 +85,13 @@ class UserPhotoSelect(View):
         try:
             student = Student.objects.get(user=user)
             if form.is_valid():
-                student.photo=request.FILES['image']
+                student.photo = request.FILES['image']
                 student.save()
                 return HttpResponseRedirect(reverse('/'))
         except Student.DoesNotExist:
             try:
                 teacher = Teacher.objects.get(user=user)
-                teacher.photo=request.FILES['image']
+                teacher.photo = request.FILES['image']
                 teacher.save()
                 return HttpResponseRedirect(reverse('/'))
             except Teacher.DoesNotExist:
@@ -122,9 +106,38 @@ class StudentMarkBySubject(View):
                 student = Student.objects.get(user=request.user)
                 subject = SubjectOfUnivGroup.objects.get(pk=subject_pk)
                 marks = StudentSubjectMark.objects.filter(student=student, subject=subject)
-                return render(request, 'subject_marks.html', {'student':student,
+                return render(request, 'subject_marks.html', {'student': student,
                                                               'marks': marks,
                                                               'subject': subject})
+            except Student.DoesNotExist:
+                return redirect('/login/')
+        else:
+            return redirect('/login/')
+
+
+class StudentMarksChart(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            try:
+                student = Student.objects.get(user=request.user)
+                return render(request, 'marks_chart.html', {'student': student,
+                                                            'values': chart_marks_data(student)})
+            except Student.DoesNotExist:
+                return redirect('/login/')
+        else:
+            return redirect('/login/')
+
+
+class TeacherMessages(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            try:
+                student = Student.objects.get(user=request.user)
+                messages = TeacherMessage.objects.filter(univ_group=student.univ_group)
+                return render(request, 'teachers_messages.html', {'student': student,
+                                                                 'messages': messages})
             except Student.DoesNotExist:
                 return redirect('/login/')
         else:

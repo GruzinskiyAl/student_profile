@@ -63,3 +63,24 @@
 #schedule table {
     padding:10px
 }
+.message{
+    margin:1%;
+    padding: 2%;
+    border: 1px solid #BDBDBD;
+}
+.sender{
+    font-size: 1.7em;
+    color:#585858;
+    padding-left: 5%;
+    border-bottom: 2px solid #BDBDBD;
+}
+.text{
+    font-size: 1.5em;
+    color: #151515;
+}
+.published_date{
+    border-top: 2px solid #BDBDBD;
+    font-size: 1em;
+    color: #DF0101;
+    padding-left: 80%;
+}

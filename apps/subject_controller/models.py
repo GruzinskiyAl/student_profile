@@ -184,7 +184,6 @@ class ExamSubjectMark(models.Model):
 
 class StudentSubjectMark(models.Model):
     subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=u'Студент')
     date = models.DateField(auto_now_add=True, verbose_name=u'Дата')
     semester = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Семестр')
@@ -204,3 +203,13 @@ class StudentSubjectMark(models.Model):
 
     def set_mark(self):
         self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
+
+
+class TeacherMessage(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=u'Преподаватель')
+    date = models.DateField(auto_now_add=True, verbose_name=u'Дата')
+    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
+    message = models.TextField(verbose_name=u'Текст')
+
+    def __str__(self):
+        return str(self.date) + '_' + self.univ_group.group_name

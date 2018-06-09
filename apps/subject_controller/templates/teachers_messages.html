@@ -59,42 +59,31 @@
 				<div class="row" id="choice">
 					 <div class="vertical-menu">
 						  <a href="{% url 'schedule' %}" >Расписание</a>
-						  <a href="{% url 'subject_list' %}" class="active">Список предметов</a>
+						  <a href="{% url 'subject_list' %}" >Список предметов</a>
 						  <a href="{% url 'exam_list' %}">Список экзаменов</a>
 						  <a href="{% url 'marks_chart' %}">Успеваемость</a>
-						  <a href="{% url 'messages' %}">Сообщения преподавателей</a>
+						  <a href="{% url 'messages' %}" class="active">Сообщения преподавателей</a>
 					</div>
 				</div>
 
 		</div>
 		<div class="col-sm-9">
 			<div class="container-fluid">
-                <h2> {{subject.subject.name}} </h2>
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th scope="col">Семестр</th>
-							<th scope="col">Дата</th>
-							<th scope="col">Преподаватель</th>
-							<th scope="col">Оценка</th>
-							<th scope="col">Упрощенная оценка</th>
-							<th scope="col">EU оценка</th>
-						</tr>
-					</thead>
-					<tbody>
-					{% for mark in marks %}
-						<tr>
-							<td>{{ mark.semester }}</td>
-							<td>{{ mark.date }}</td>
-							<td>{{ subject.subject.teacher.last_name }} {{subject.subject.teacher.first_name}}
-								{{subject.subject.teacher.patronymic}}</td>
-							<td>{{ mark.full_mark }}</td>
-							<td>{{ mark.simple_mark }}</td>
-							<td>{{ mark.full_mark}}</td>
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
+            <div class="row">
+                {% for message in messages %}
+                <div class="col-sm-5 message">
+                    <div class="sender">
+                        {{ message.teacher.name_initials_string }}
+                    </div>
+                    <div class="text">
+                        {{ message.message }}
+                    </div>
+                    <div class="published_date">
+                        {{ message.date }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
 			</div>
 		</div>
 	</div>
