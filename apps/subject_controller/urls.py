@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 
 from .views import (SubjectList, TeacherMessages,
                     StudentSchedule, GroupExamList,
-                    SubjectMaterial, UserPhotoSelect,
+                    SubjectMaterial, update_image,
                     StudentMarkBySubject,
                     StudentMarksChart)
 from django.conf.urls import url, include
@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^progress/$', StudentMarksChart.as_view(), name='marks_chart'),
     url(r'^messages/$', TeacherMessages.as_view(), name='messages'),
     url(r'^exams/$', GroupExamList.as_view(), name='exam_list'),
-    url(r'^photo/change/$', UserPhotoSelect.as_view(), name='change_photo')
+    url(r'^photo/change/$', update_image, name='change_photo')
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

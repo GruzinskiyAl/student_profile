@@ -77,25 +77,25 @@ class SubjectMaterial(View):
             return redirect('/login/')
 
 
-class UserPhotoSelect(View):
+# class UserPhotoSelect(View):
 
-    def post(self, request):
-        form = ImageForm(request.POST, request.FILES)
-        user = request.user
-        try:
+def update_image(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = ImageForm(request.POST, request.FILES)
+            user = request.user
             student = Student.objects.get(user=user)
             if form.is_valid():
-                student.photo = request.FILES['image']
+                student.photo = request.FILES['photo']
+                student.t_number = request.POST['t_number']
+                student.email = request.POST['email']
                 student.save()
-                return HttpResponseRedirect(reverse('/'))
-        except Student.DoesNotExist:
-            try:
-                teacher = Teacher.objects.get(user=user)
-                teacher.photo = request.FILES['image']
-                teacher.save()
-                return HttpResponseRedirect(reverse('/'))
-            except Teacher.DoesNotExist:
-                return redirect('/login/')
+                return HttpResponseRedirect(reverse('schedule'))
+        else:
+            form = ImageForm()
+        return render(request, 'image_search.html', {'form':form})
+    else:
+        return redirect('/login/')
 
 
 class StudentMarkBySubject(View):

@@ -1,7 +1,8 @@
-from django import forms
+from django.forms import ModelForm
+from apps.main.models import Student
 
 
-class ImageForm(forms.Form):
-    image = forms.FileField(
-        label='Select a file'
-)
+class ImageForm(ModelForm):
+    class Meta:
+        model = Student
+        fields = ['t_number', 'email', 'photo']

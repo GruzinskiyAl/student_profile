@@ -21,6 +21,7 @@ class Teacher(models.Model):
     def name_initials_string(self):
         return self.last_name + ' ' + self.first_name[0] + '.' + ' ' + self.patronymic[0] + '.'
 
+
 class UnivGroup(models.Model):
     group_name = models.CharField(_(u'Название'), max_length=15, unique=True)
     faculty = models.CharField(_(u'Факультет'), max_length=150)
@@ -45,7 +46,7 @@ class Student(models.Model):
     t_number = models.CharField(_(u'Номер телефона'), max_length=10)
     email = models.EmailField(_(u'Почта'), null=True, blank=True)
     univ_group = models.ForeignKey(UnivGroup, on_delete=models.SET_NULL, null=True)
-    photo = models.ImageField(upload_to='user_media', null=True, blank=True)
+    photo = models.ImageField(_(u'Фото'), upload_to='user_media', null=True, blank=True)
 
     class Meta:
         ordering = ['univ_group']
