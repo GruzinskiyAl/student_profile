@@ -62,8 +62,8 @@
 						  <a href="{% url 'subject_list' %}" >Список предметов</a>
 						  <a href="{% url 'exam_list' %}">Список экзаменов</a>
 						  <a href="{% url 'marks_chart' %}">Успеваемость</a>
-						  <a href="{% url 'messages' %}" class="active">Сообщения преподавателей</a>
-                          <a href="{% url 'teachers_list' %}">Преподаватели</a>
+						  <a href="{% url 'messages' %}" >Сообщения преподавателей</a>
+						  <a href="{% url 'teachers_list' %}" class="active">Преподаватели</a>
 					</div>
 				</div>
 
@@ -71,17 +71,29 @@
 		<div class="col-sm-9">
 			<div class="container-fluid">
             <div class="row">
-                {% for message in messages %}
-                <div class="col-sm-5 message">
-                    <div class="sender">
-                        {{ message.teacher.name_initials_string }}
-                    </div>
-                    <div class="text">
-                        {{ message.message }}
-                    </div>
-                    <div class="published_date">
-                        {{ message.date }}
-                    </div>
+                {% for teacher in teachers %}
+                <div class="col-sm-4">
+					<div class="teacher_card">
+					<div class="container-fluid">
+						{% if teacher.photo %}
+						<img src="{{ teacher.photo.url }}" class="img-thumbnail"/>
+						{% else %}
+						<img src="{% static 'user.png' %}" class="img-thumbnail"/>
+						{% endif %}
+					</div>
+						<div class="teacher_info">
+						<h4>{{ teacher.first_name }} {{teacher.last_name}} {{teacher.patronymic}}</h4>
+						<h4><small>
+							<p>{{teacher.position}}</p>
+							<p>{{teacher.t_number}}</p>
+							<p>{{teacher.email}}</p>
+							{% if teacher.about %}
+							<p>О себе:</p>
+							<p>{{teacher.about}}</p>
+							{% endif %}
+						</small></h4>
+						</div>
+					</div>
                 </div>
                 {% endfor %}
             </div>

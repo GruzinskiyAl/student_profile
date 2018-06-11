@@ -1,10 +1,4 @@
 # coding=utf-8
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views import View
-from django.contrib import auth
-
-from apps.main.models import *
 from .models import *
 
 
@@ -27,15 +21,21 @@ def schedule_for_template(schedule_queryset):
             try:
                 subject_num = ''
                 subject_denom = ''
-                schedule_obj = schedule_queryset.get(day=en_day, lesson_num=lesson)
+                schedule_obj = schedule_queryset.get(
+                    day=en_day, lesson_num=lesson)
                 if schedule_obj.subject_numerator:
                     subject_num = 'Чс: ' + schedule_obj.subject_numerator.subject.name
-                    subject_num += ' ' + str(schedule_obj.subject_numerator.subject.teacher.name_initials_string())
-                    subject_num += ' ' + str(schedule_obj.lecture_hall_numerator)
+                    subject_num += ' ' + \
+                        str(schedule_obj.subject_numerator.subject.teacher.name_initials_string())
+                    subject_num += ' ' + \
+                        str(schedule_obj.lecture_hall_numerator)
                 if schedule_obj.subject_denominator:
-                    subject_denom = subject_denom + ' Зн: ' + schedule_obj.subject_denominator.subject.name
-                    subject_denom += ' ' + str(schedule_obj.subject_denominator.subject.teacher.name_initials_string())
-                    subject_denom += ' ' + str(schedule_obj.lecture_hall_denominator)
+                    subject_denom = subject_denom + ' Зн: ' + \
+                        schedule_obj.subject_denominator.subject.name
+                    subject_denom += ' ' + \
+                        str(schedule_obj.subject_denominator.subject.teacher.name_initials_string())
+                    subject_denom += ' ' + \
+                        str(schedule_obj.lecture_hall_denominator)
                 num_dict[lesson] = {'subject_num': subject_num,
                                     'subject_denom': subject_denom}
             except WeekSchedule.DoesNotExist:
@@ -49,7 +49,8 @@ def subject_materials_for_template(group_subject_object):
     labs = SubjectLab.objects.filter(subject=group_subject_object)
     lectures = SubjectLecture.objects.filter(subject=group_subject_object)
     literature = SubjectLiterature.objects.filter(subject=group_subject_object)
-    material = SubjectAdditionalMaterial.objects.filter(subject=group_subject_object)
+    material = SubjectAdditionalMaterial.objects.filter(
+        subject=group_subject_object)
     return labs, lectures, literature, material
 
 
@@ -74,30 +75,6 @@ def chart_marks_data(student):
         for mark in semester_marks.values_list('full_mark'):
             value += int(mark[0])
         if semester_marks.count() != 0:
-            middle = round(value/semester_marks.count(), 2)
+            middle = round(value / semester_marks.count(), 2)
             data.append([str(i) + u' семестр', middle])
     return data
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

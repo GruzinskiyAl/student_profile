@@ -30,7 +30,10 @@ SEMESTER = [(i, i) for i in [x * 0.5 for x in range(1, 9)]]
 
 class Subject(models.Model):
     name = models.CharField(_(u'Название'), max_length=300, unique=True)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=u'Преподаватель')
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        verbose_name=u'Преподаватель')
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     def __str__(self):
@@ -42,8 +45,11 @@ class Subject(models.Model):
 
 
 class SubjectLiterature(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    literature = models.TextField(_(u'Литература'),null=True, blank=True)
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
+    literature = models.TextField(_(u'Литература'), null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     def __str__(self):
@@ -56,7 +62,10 @@ class SubjectLiterature(models.Model):
 
 class SubjectLecture(models.Model):
     name = models.CharField(max_length=256, default='Лекция')
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
     lecture_url = models.URLField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
@@ -71,7 +80,10 @@ class SubjectLecture(models.Model):
 
 class SubjectLab(models.Model):
     name = models.CharField(max_length=256, default='Лабораторная работа')
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
     lab_url = models.URLField(null=True, blank=True)
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
@@ -85,8 +97,12 @@ class SubjectLab(models.Model):
 
 
 class SubjectAdditionalMaterial(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    additional_material = models.TextField(null=True, blank=True, verbose_name=u'Материалы')
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
+    additional_material = models.TextField(
+        null=True, blank=True, verbose_name=u'Материалы')
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
     class Meta:
@@ -98,12 +114,27 @@ class SubjectAdditionalMaterial(models.Model):
 
 
 class SubjectOfUnivGroup(models.Model):
-    group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    start_semester = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Начальный семестр')
-    semester_quantity = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Количество семестров')
-    closing_date = models.DateField(default=timezone.now, verbose_name=u'Дата окончания')
-    hours_count = models.IntegerField(default=100, verbose_name=u'Количество часов')
+    group = models.ForeignKey(
+        UnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Группа')
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
+    start_semester = models.FloatField(
+        choices=SEMESTER,
+        default=1.0,
+        verbose_name=u'Начальный семестр')
+    semester_quantity = models.FloatField(
+        choices=SEMESTER,
+        default=1.0,
+        verbose_name=u'Количество семестров')
+    closing_date = models.DateField(
+        default=timezone.now,
+        verbose_name=u'Дата окончания')
+    hours_count = models.IntegerField(
+        default=100, verbose_name=u'Количество часов')
 
     class Meta:
         unique_together = ('group', 'subject')
@@ -116,15 +147,37 @@ class SubjectOfUnivGroup(models.Model):
 
 
 class WeekSchedule(models.Model):
-    day = models.CharField(choices=DAY_STATUS_CHOICES, default='Monday', max_length=20, verbose_name=u'День недели')
-    lesson_num = models.IntegerField(choices=LESSON_STATUS_CHOICES, default=1, verbose_name=u'Номер ленты')
-    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
-    subject_numerator = models.ForeignKey(SubjectOfUnivGroup, related_name=u'числитель',
-                                          on_delete=models.SET_NULL, null=True, blank=True, default=None)
-    subject_denominator = models.ForeignKey(SubjectOfUnivGroup, related_name=u'знаменатель',
-                                            on_delete=models.SET_NULL, null=True, blank=True, default=None)
-    lecture_hall_numerator = models.CharField(_(u'Аудитория чис'), max_length=50, null=True, blank=True)
-    lecture_hall_denominator = models.CharField(_(u'Аудитория знам'), max_length=50, null=True, blank=True)
+    day = models.CharField(
+        choices=DAY_STATUS_CHOICES,
+        default='Monday',
+        max_length=20,
+        verbose_name=u'День недели')
+    lesson_num = models.IntegerField(
+        choices=LESSON_STATUS_CHOICES,
+        default=1,
+        verbose_name=u'Номер ленты')
+    univ_group = models.ForeignKey(
+        UnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Группа')
+    subject_numerator = models.ForeignKey(
+        SubjectOfUnivGroup,
+        related_name=u'числитель',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None)
+    subject_denominator = models.ForeignKey(
+        SubjectOfUnivGroup,
+        related_name=u'знаменатель',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None)
+    lecture_hall_numerator = models.CharField(
+        _(u'Аудитория чис'), max_length=50, null=True, blank=True)
+    lecture_hall_denominator = models.CharField(
+        _(u'Аудитория знам'), max_length=50, null=True, blank=True)
 
     class Meta:
         unique_together = ('day',
@@ -135,13 +188,21 @@ class WeekSchedule(models.Model):
         verbose_name = 'Элемент расписания'
 
     def __str__(self):
-        return str(self.univ_group.name) + '_' + str(self.day) + '_' + str(self.lesson_num)
+        return str(self.univ_group.name) + '_' + \
+            str(self.day) + '_' + str(self.lesson_num)
 
 
 class GroupExam(models.Model):
-    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
-    exam_datetime = models.DateTimeField(default=timezone.now, verbose_name=u'Дата и время')
+    subject = models.ForeignKey(
+        SubjectOfUnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
+    univ_group = models.ForeignKey(
+        UnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Группа')
+    exam_datetime = models.DateTimeField(
+        default=timezone.now, verbose_name=u'Дата и время')
     lecture_hall = models.CharField(_(u'Аудитория'), max_length=50)
 
     class Meta:
@@ -154,17 +215,33 @@ class GroupExam(models.Model):
 
 
 class ExamSubjectMark(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=u'Студент')
-    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=u'Преподаватель')
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        verbose_name=u'Студент')
+    subject = models.ForeignKey(
+        SubjectOfUnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        verbose_name=u'Преподаватель')
     date = models.DateField(default=timezone.now, verbose_name=u'Дата')
     full_mark = models.IntegerField(default=1,
                                     validators=[
                                         MaxValueValidator(100),
                                         MinValueValidator(1)
                                     ], verbose_name=u'Оценка')
-    simple_mark = models.IntegerField(choices=SIMPLE_MARK, default=5, verbose_name=u'Упрощенная оценка')
-    euro_mark = models.CharField(choices=EURO_MARK, default='A', max_length=1, verbose_name=u'EU оценка')
+    simple_mark = models.IntegerField(
+        choices=SIMPLE_MARK,
+        default=5,
+        verbose_name=u'Упрощенная оценка')
+    euro_mark = models.CharField(
+        choices=EURO_MARK,
+        default='A',
+        max_length=1,
+        verbose_name=u'EU оценка')
 
     class Meta:
         unique_together = ('student', 'subject', 'date')
@@ -172,7 +249,8 @@ class ExamSubjectMark(models.Model):
         verbose_name = 'Оценка по экзамену'
 
     def __str__(self):
-        return self.student.last_name + '_' + self.subject.subject.name + '_' + str(self.full_mark)
+        return self.student.last_name + '_' + \
+            self.subject.subject.name + '_' + str(self.full_mark)
 
     def __init__(self, *args, **kwargs):
         super(ExamSubjectMark, self).__init__(*args, **kwargs)
@@ -183,13 +261,29 @@ class ExamSubjectMark(models.Model):
 
 
 class StudentSubjectMark(models.Model):
-    subject = models.ForeignKey(SubjectOfUnivGroup, on_delete=models.CASCADE, verbose_name=u'Предмет')
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name=u'Студент')
+    subject = models.ForeignKey(
+        SubjectOfUnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Предмет')
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        verbose_name=u'Студент')
     date = models.DateField(auto_now_add=True, verbose_name=u'Дата')
-    semester = models.FloatField(choices=SEMESTER, default=1.0, verbose_name=u'Семестр')
+    semester = models.FloatField(
+        choices=SEMESTER,
+        default=1.0,
+        verbose_name=u'Семестр')
     full_mark = models.IntegerField(default=100, verbose_name=u'Оценка')
-    simple_mark = models.IntegerField(choices=SIMPLE_MARK, default=5, verbose_name=u'Упрощенная оценка')
-    euro_mark = models.CharField(choices=EURO_MARK, default='A', max_length=1, verbose_name=u'EU оценка')
+    simple_mark = models.IntegerField(
+        choices=SIMPLE_MARK,
+        default=5,
+        verbose_name=u'Упрощенная оценка')
+    euro_mark = models.CharField(
+        choices=EURO_MARK,
+        default='A',
+        max_length=1,
+        verbose_name=u'EU оценка')
 
     class Meta:
         verbose_name_plural = 'Оценки'
@@ -206,9 +300,15 @@ class StudentSubjectMark(models.Model):
 
 
 class TeacherMessage(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name=u'Преподаватель')
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        verbose_name=u'Преподаватель')
     date = models.DateField(auto_now_add=True, verbose_name=u'Дата')
-    univ_group = models.ForeignKey(UnivGroup, on_delete=models.CASCADE, verbose_name=u'Группа')
+    univ_group = models.ForeignKey(
+        UnivGroup,
+        on_delete=models.CASCADE,
+        verbose_name=u'Группа')
     message = models.TextField(verbose_name=u'Текст')
 
     def __str__(self):

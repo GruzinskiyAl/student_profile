@@ -84,3 +84,9 @@
     color: #DF0101;
     padding-left: 80%;
 }
+
+.teacher_card{
+    text-align: center;
+    margin-top:1%;
+    border: 1px solid #4CAF50;
+}

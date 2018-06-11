@@ -42,9 +42,9 @@
 						<h4>{{ student.first_name }} {{student.last_name}} {{student.patronymic}}</h4>
 						<div class="container-fluid">
 							{% if student.photo %}
-							<img src="{{ student.photo.url }}" class="img-thumbnail"/>
+							<a href="{% url 'change_photo' %}"> <img src="{{ student.photo.url }}" class="img-thumbnail"/></a>
 							{% else %}
-							<img src="{% static 'user.png' %}" class="img-thumbnail"/>
+							<a href="{% url 'change_photo' %}"><img src="{% static 'user.png' %}" class="img-thumbnail"/></a>
 							{% endif %}
 						</div>
 						<div>
@@ -63,6 +63,7 @@
 						  <a href="{% url 'exam_list' %}">Список экзаменов</a>
 						  <a href="{% url 'marks_chart' %}" class="active">Успеваемость</a>
 						  <a href="{% url 'messages' %}">Сообщения преподавателей</a>
+						  <a href="{% url 'teachers_list' %}">Преподаватели</a>
 					</div>
 				</div>
 
