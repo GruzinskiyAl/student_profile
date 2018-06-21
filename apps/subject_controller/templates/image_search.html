@@ -61,7 +61,7 @@
 						  <a href="{% url 'schedule' %}" >Расписание</a>
 						  <a href="{% url 'subject_list' %}" >Список предметов</a>
 						  <a href="{% url 'exam_list' %}">Список экзаменов</a>
-						  <a href="{% url 'marks_chart' %}" class="active">Успеваемость</a>
+						  <a href="{% url 'marks_chart' %}">Успеваемость</a>
 						  <a href="{% url 'messages' %}">Сообщения преподавателей</a>
 						  <a href="{% url 'teachers_list' %}">Преподаватели</a>
 					</div>
@@ -71,11 +71,12 @@
 		<div class="col-sm-9">
 			<div class="container-fluid">
 				<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    <div for="t_number">Номер телефона:  </div>
+                    <div for="t_number">
+						Номер телефона:  {{form.t_number.errors}}</div>
                     <input id="t_number" type="text" name="t_number" value="{{ t_number }}" >
-                    <div for="email">Email:  </div>
+                    <div for="email">Email:  {{form.email.errors}}</div>
                     <input id="email" type="email" name="email" value="{{ email }}" >
-                    <div for="photo">Фото:  </div>
+                    <div for="photo">Фото:  {{form.t_number.errors}}</div>
                     <input id="photo" type="file" name="photo" value="{{ photo }}" >
                     <div>
                         <input type="submit" value="Подтвердить" />
