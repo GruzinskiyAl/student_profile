@@ -6,7 +6,8 @@ from .views import (SubjectList, TeacherMessages,
                     SubjectMaterial, update_image,
                     StudentMarkBySubject,
                     StudentMarksChart,
-                    TeachersList)
+                    TeachersList,
+                    GroupInfo)
 from django.conf.urls import url
 
 urlpatterns = [
@@ -21,6 +22,7 @@ urlpatterns = [
     url(r'^exams/$', GroupExamList.as_view(), name='exam_list'),
     url(r'^photo/change/$', update_image, name='change_photo'),
     url(r'^teachers/$', TeachersList.as_view(), name='teachers_list'),
+    url(r'^group/$', GroupInfo.as_view(), name='group_info'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -25,7 +25,7 @@ EURO_MARK = (
     ('F', 'F'),
 )
 SIMPLE_MARK = [(i, i) for i in range(1, 6)]
-SEMESTER = [(i, i) for i in [x * 0.5 for x in range(1, 9)]]
+SEMESTER = [(i, i) for i in [x * 0.5 for x in range(1, 17)]]
 
 
 class Subject(models.Model):
@@ -129,10 +129,7 @@ class SubjectOfUnivGroup(models.Model):
     semester_quantity = models.FloatField(
         choices=SEMESTER,
         default=1.0,
-        verbose_name=u'Количество семестров')
-    closing_date = models.DateField(
-        default=timezone.now,
-        verbose_name=u'Дата окончания')
+        verbose_name=u'Семестр окончания')
     hours_count = models.IntegerField(
         default=100, verbose_name=u'Количество часов')
 
@@ -211,7 +208,7 @@ class GroupExam(models.Model):
         unique_together = ('subject', 'univ_group')
 
     def __str__(self):
-        return str(self.subject.name) + '_' + str(self.exam_datetime)
+        return str(self.subject.subject.name) + '_' + str(self.exam_datetime)
 
 
 class ExamSubjectMark(models.Model):
@@ -242,6 +239,10 @@ class ExamSubjectMark(models.Model):
         default='A',
         max_length=1,
         verbose_name=u'EU оценка')
+    semester = models.FloatField(
+        choices=SEMESTER,
+        default=1.0,
+        verbose_name=u'Семестр')
 
     class Meta:
         unique_together = ('student', 'subject', 'date')

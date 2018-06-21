@@ -1,6 +1,8 @@
 # coding=utf-8
-from .models import *
+from math import trunc
 
+from .models import *
+from django.db.models import Max
 
 DAY_STATUS_CHOICES = (
     ('Monday', u'Понедельник'),
@@ -78,3 +80,11 @@ def chart_marks_data(student):
             middle = round(value / semester_marks.count(), 2)
             data.append([str(i) + u' семестр', middle])
     return data
+
+
+def group_rating(student):
+    group = student.univ_group
+    subjects = SubjectOfUnivGroup.objects.filter(group=group)
+    semester = ExamSubjectMark.objects.filter(subject__in=subjects).values('semester')[1]
+    marks = ExamSubjectMark.objects.all()
+    return marks
