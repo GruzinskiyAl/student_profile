@@ -18,4 +18,4 @@ def mark_generation(full_mark):
     else:
         simple_mark = 2
         eu_mark = 'F'
-    return simple_mark, eu_mark
+    return full_mark, simple_mark, eu_mark

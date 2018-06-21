@@ -40,7 +40,7 @@ class StudentSchedule(View):
         return render(
             request, 'schedule.html', {
                 'day_list': schedule_for_template(schedules_queryset),
-                })
+            })
 
 
 class GroupExamList(View):
@@ -139,5 +139,7 @@ class GroupInfo(View):
     @auth_check
     def get(self, request):
         student = Student.objects.get(user=request.user)
-        marks = group_rating(student)
-        return render(request, 'group_info.html', {'marks':marks})
+        stipend, non_stipend, semester = group_rating(student)
+        return render(request, 'group_info.html', {'stipend': stipend,
+                                                   'non_stipend': non_stipend,
+                                                   'semester': semester})

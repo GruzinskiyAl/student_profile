@@ -245,7 +245,7 @@ class ExamSubjectMark(models.Model):
         verbose_name=u'Семестр')
 
     class Meta:
-        unique_together = ('student', 'subject', 'date')
+        unique_together = ('student', 'subject', 'semester')
         verbose_name_plural = 'Оценоки по экзаменам'
         verbose_name = 'Оценка по экзамену'
 
@@ -258,7 +258,7 @@ class ExamSubjectMark(models.Model):
         self.set_mark()
 
     def set_mark(self):
-        self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
+        self.full_mark, self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
 
 
 class StudentSubjectMark(models.Model):
@@ -297,7 +297,7 @@ class StudentSubjectMark(models.Model):
         self.set_mark()
 
     def set_mark(self):
-        self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
+        self.full_mark, self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
 
 
 class TeacherMessage(models.Model):

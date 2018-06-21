@@ -1,8 +1,10 @@
 # coding=utf-8
 from math import trunc
-
+from operator import itemgetter
 from .models import *
-from django.db.models import Max
+from django.db.models import Max, Avg
+from .models_methods import mark_generation
+
 
 DAY_STATUS_CHOICES = (
     ('Monday', u'Понедельник'),
@@ -28,16 +30,16 @@ def schedule_for_template(schedule_queryset):
                 if schedule_obj.subject_numerator:
                     subject_num = 'Чс: ' + schedule_obj.subject_numerator.subject.name
                     subject_num += ' ' + \
-                        str(schedule_obj.subject_numerator.subject.teacher.name_initials_string())
+                                   str(schedule_obj.subject_numerator.subject.teacher.name_initials_string())
                     subject_num += ' ' + \
-                        str(schedule_obj.lecture_hall_numerator)
+                                   str(schedule_obj.lecture_hall_numerator)
                 if schedule_obj.subject_denominator:
                     subject_denom = subject_denom + ' Зн: ' + \
-                        schedule_obj.subject_denominator.subject.name
+                                    schedule_obj.subject_denominator.subject.name
                     subject_denom += ' ' + \
-                        str(schedule_obj.subject_denominator.subject.teacher.name_initials_string())
+                                     str(schedule_obj.subject_denominator.subject.teacher.name_initials_string())
                     subject_denom += ' ' + \
-                        str(schedule_obj.lecture_hall_denominator)
+                                     str(schedule_obj.lecture_hall_denominator)
                 num_dict[lesson] = {'subject_num': subject_num,
                                     'subject_denom': subject_denom}
             except WeekSchedule.DoesNotExist:
@@ -85,6 +87,18 @@ def chart_marks_data(student):
 def group_rating(student):
     group = student.univ_group
     subjects = SubjectOfUnivGroup.objects.filter(group=group)
-    semester = ExamSubjectMark.objects.filter(subject__in=subjects).values('semester')[1]
-    marks = ExamSubjectMark.objects.all()
-    return marks
+    semester = ExamSubjectMark.objects.filter(subject__in=subjects).aggregate(Max('semester'))['semester__max']
+    students = Student.objects.filter(univ_group=group)
+    stipend_percent = round(students.count()*0.4)
+    data = []
+    for stud in students:
+        stud_mark = {}
+        avg_mark = ExamSubjectMark.objects.filter(student=stud,
+                                                  semester=semester).aggregate(Avg('full_mark'))
+        stud_mark['student'] = stud
+        stud_mark['avg_mark'] = mark_generation(round(avg_mark['full_mark__avg']))
+        data.append(stud_mark)
+    data = sorted(data, key=itemgetter('avg_mark'), reverse=True)
+    stipend = data[:stipend_percent]
+    non_stipend = data[stipend_percent:]
+    return stipend, non_stipend, semester

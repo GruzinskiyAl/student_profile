@@ -1,8 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
 			<div class="container-fluid">
-				{% for mark in marks %}
-                {{mark}}
-                {% endfor %}
+<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">Студент</th>
+							<th scope="col">Семестр</th>
+							<th scope="col">Средний бал</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for obj in stipend %}
+						<tr id="stipend">
+							<td>{{obj.student.last_name}} {{obj.student.first_name}}</td>
+							<td>{{semester}}</td>
+							<td>{{ obj.avg_mark }}</td>
+						</tr>
+					{% endfor %}
+					{% for obj in non_stipend %}
+						<tr>
+							<td>{{obj.student.last_name}} {{obj.student.first_name}}</td>
+							<td>{{semester}}</td>
+							<td>{{ obj.avg_mark }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
 			</div>
 {% endblock %}
