@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
@@ -14,7 +14,8 @@ from apps.main.models import *
 from .to_dict_functions import (schedule_for_template,
                                 subject_materials_for_template,
                                 subject_list_with_marks,
-                                chart_marks_data, group_rating)
+                                chart_marks_data, group_rating,
+                                group_chart_marks_data)
 from .forms import ImageForm
 from .decorators import auth_check
 
@@ -58,8 +59,7 @@ class SubjectMaterial(View):
 
     @auth_check
     def get(self, request, subject_pk):
-        student = Student.objects.get(user=request.user)
-        subject = Subject.objects.get(pk=subject_pk)
+        subject = get_object_or_404(SubjectOfUnivGroup, pk=subject_pk)
         labs, lectures, literature_list, materials = subject_materials_for_template(
             subject)
         return render(request,
@@ -127,19 +127,25 @@ class TeachersList(View):
 
     @auth_check
     def get(self, request):
-        student = Student.objects.get(user=request.user)
-        teachers = Teacher.objects.all()
         return render(
             request, 'teachers_list.html',
-            {'teachers': teachers})
+            {'teachers': Teacher.objects.all()})
 
 
 class GroupInfo(View):
 
     @auth_check
-    def get(self, request):
+    def get(self, request, semester):
         student = Student.objects.get(user=request.user)
-        stipend, non_stipend, semester = group_rating(student)
+        stipend, non_stipend, semester = group_rating(student, semester)
         return render(request, 'group_info.html', {'stipend': stipend,
                                                    'non_stipend': non_stipend,
                                                    'semester': semester})
+
+
+class GroupMarkChart(View):
+
+    @auth_check
+    def get(self, request):
+        student = Student.objects.get(user=request.user)
+        return render(request, 'group_chart.html', {'values': group_chart_marks_data(student)})

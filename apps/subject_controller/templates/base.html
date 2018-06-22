@@ -66,11 +66,11 @@
 						  <a href="{% url 'marks_chart' %}">Успеваемость</a>
 						  <a href="{% url 'messages' %}">Сообщения преподавателей</a>
 						 <a href=" {% url 'teachers_list' %}">Преподаватели</a>
-						 <a href="{% url 'group_info' %}">Группа</a>
+						 <a href="{% url 'group_info' semester=1 %}">Группа</a>
 					</div>
 				</div>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-9 content">
                 {% block content %}
                 {% endblock %}
             </div>

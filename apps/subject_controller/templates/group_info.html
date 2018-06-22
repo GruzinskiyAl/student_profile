@@ -1,7 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
 			<div class="container-fluid">
-<table class="table table-striped">
+				<nav class="navbar navbar-default">
+				  <div class="container-fluid">
+					<ul class="nav navbar-nav">
+					  <li class="active dropdown">
+						    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+							  Рейтинг семестра
+							  <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								{% for sem in semesters %}
+							  <li><a href="{% url 'group_info' semester=sem %}">{{ sem }} Семестр</a></li>
+								{% endfor %}
+							</ul>
+					  </li>
+					  <li><a href="{% url 'group_chart' %}">Успеваемость</a></li>
+					</ul>
+				  </div>
+				</nav>
+				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th scope="col">Студент</th>

@@ -16,10 +16,10 @@
 }
 
 
-#menu {
-	height: 1000px;
-	border-right-color: #333;
-    border-right-style: solid;  
+.content {
+	height: 100%;
+	border-left-color: #333;
+    border-left-style: solid;
 }
 
 #info {
