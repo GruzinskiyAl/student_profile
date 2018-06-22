@@ -29,7 +29,7 @@ class UnivGroup(models.Model):
     group_name = models.CharField(_(u'Название'), max_length=15, unique=True)
     faculty = models.CharField(_(u'Факультет'), max_length=150)
     pulpit = models.CharField(_(u'Кафедра'), max_length=150)
-    curator = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    curator = models.ForeignKey(Teacher)
     enter_date = models.DateField(default=timezone.now)
     finish_date = models.DateField(default=timezone.now)
 
@@ -42,10 +42,10 @@ class UnivGroup(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    stud_number = models.CharField(max_length=10)
     first_name = models.CharField(_(u'Имя'), max_length=150)
     last_name = models.CharField(_(u'Фамилия'), max_length=150)
     patronymic = models.CharField(_(u'Отчество'), max_length=150)
-    birth_date = models.DateField(null=True)
     t_number = models.CharField(_(u'Номер телефона'), max_length=10)
     email = models.EmailField(_(u'Почта'), null=True, blank=True)
     univ_group = models.ForeignKey(

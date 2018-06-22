@@ -29,10 +29,9 @@ SEMESTER = [(i, i) for i in [x * 0.5 for x in range(1, 17)]]
 
 
 class Subject(models.Model):
-    name = models.CharField(_(u'Название'), max_length=300, unique=True)
+    name = models.TextField(_(u'Название'), unique=True)
     teacher = models.ForeignKey(
         Teacher,
-        on_delete=models.CASCADE,
         verbose_name=u'Преподаватель')
     description = models.TextField(_(u'Описание'), null=True, blank=True)
 
@@ -185,7 +184,7 @@ class WeekSchedule(models.Model):
         verbose_name = 'Элемент расписания'
 
     def __str__(self):
-        return str(self.univ_group.name) + '_' + \
+        return str(self.univ_group.group_name) + '_' + \
             str(self.day) + '_' + str(self.lesson_num)
 
 
@@ -298,6 +297,10 @@ class StudentSubjectMark(models.Model):
 
     def set_mark(self):
         self.full_mark, self.simple_mark, self.euro_mark = mark_generation(self.full_mark)
+
+    def __str__(self):
+        return self.student.last_name + '_' + \
+            self.subject.subject.name + '_' + str(self.full_mark)
 
 
 class TeacherMessage(models.Model):

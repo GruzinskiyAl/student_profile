@@ -7,7 +7,7 @@ from .views import (SubjectList, TeacherMessages,
                     StudentMarkBySubject,
                     StudentMarksChart,
                     TeachersList,
-                    GroupInfo)
+                    GroupInfo, GroupMarkChart)
 from django.conf.urls import url
 
 urlpatterns = [
@@ -22,7 +22,8 @@ urlpatterns = [
     url(r'^exams/$', GroupExamList.as_view(), name='exam_list'),
     url(r'^photo/change/$', update_image, name='change_photo'),
     url(r'^teachers/$', TeachersList.as_view(), name='teachers_list'),
-    url(r'^group/$', GroupInfo.as_view(), name='group_info'),
+    url(r'^group/(?P<semester>\d+)/$', GroupInfo.as_view(), name='group_info'),
+    url(r'^group/progress/$', GroupMarkChart.as_view(), name='group_chart'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

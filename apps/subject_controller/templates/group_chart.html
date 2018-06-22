@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+			<div class="container-fluid">
+				<nav class="navbar navbar-default">
+				  <div class="container-fluid">
+					<ul class="nav navbar-nav">
+					  <li class="dropdown">
+						    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+							  Рейтинг семестра
+							  <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								{% for sem in semesters %}
+							  <li><a href="{% url 'group_info' semester=sem %}">{{ sem }} Семестр</a></li>
+								{% endfor %}
+							</ul>
+					  </li>
+					  <li class="active"><a href="{% url 'group_chart' %}">Успеваемость</a></li>
+					</ul>
+				  </div>
+				</nav>
+                {% load googlecharts %}
+				<div id="out">
+					{% googlecharts %}
+						{% data values "out_data" %}
+							{% col "string" "Семестр" %}"{{ val }}"{% endcol %}
+							{% col "number" "Балл" %}{{ val }}{% endcol %}
+						{% enddata %}
+						{% options "out_options" %}
+							kind: "LineChart",
+							options: {
+								width: 800,
+								height: 500
+							}
+						{% endoptions %}
+						{% graph "out" "out_data" "out_options" %}
+					{% endgooglecharts %}
+					</div>
+			</div>
+{% endblock %}

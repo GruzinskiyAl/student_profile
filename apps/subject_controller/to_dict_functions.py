@@ -5,7 +5,6 @@ from .models import *
 from django.db.models import Max, Avg
 from .models_methods import mark_generation
 
-
 DAY_STATUS_CHOICES = (
     ('Monday', u'Понедельник'),
     ('Tuesday', u'Вторник'),
@@ -79,26 +78,42 @@ def chart_marks_data(student):
         for mark in semester_marks.values_list('full_mark'):
             value += int(mark[0])
         if semester_marks.count() != 0:
-            middle = round(value / semester_marks.count(), 2)
-            data.append([str(i) + u' семестр', middle])
+            avg_mark = round(value / semester_marks.count(), 2)
+            data.append([str(i) + u' семестр', avg_mark])
     return data
 
 
-def group_rating(student):
+def group_rating(student, semester):
     group = student.univ_group
-    subjects = SubjectOfUnivGroup.objects.filter(group=group)
-    semester = ExamSubjectMark.objects.filter(subject__in=subjects).aggregate(Max('semester'))['semester__max']
     students = Student.objects.filter(univ_group=group)
-    stipend_percent = round(students.count()*0.4)
+    stipend_percent = round(students.count() * 0.4)
     data = []
     for stud in students:
         stud_mark = {}
         avg_mark = ExamSubjectMark.objects.filter(student=stud,
-                                                  semester=semester).aggregate(Avg('full_mark'))
-        stud_mark['student'] = stud
-        stud_mark['avg_mark'] = mark_generation(round(avg_mark['full_mark__avg']))
-        data.append(stud_mark)
+                                                  semester=semester).aggregate(Avg('full_mark'))['full_mark__avg']
+        if avg_mark:
+            stud_mark['student'] = stud
+            stud_mark['avg_mark'] = mark_generation(round(avg_mark))
+            data.append(stud_mark)
     data = sorted(data, key=itemgetter('avg_mark'), reverse=True)
     stipend = data[:stipend_percent]
     non_stipend = data[stipend_percent:]
     return stipend, non_stipend, semester
+
+
+def group_chart_marks_data(request_student):
+    group = request_student.univ_group
+    students_count = Student.objects.filter(univ_group=group).count()
+    data = []
+    for i, i in SEMESTER:
+        sum_avg_mark = 0
+        for student in Student.objects.filter(univ_group=group):
+            marks = StudentSubjectMark.objects.filter(student=student, semester=i)
+            stud_avg_mark = marks.aggregate(Avg('full_mark'))['full_mark__avg']
+            if stud_avg_mark:
+                sum_avg_mark += stud_avg_mark
+        if students_count != 0 and marks.count() != 0:
+            avg_mark = round(sum_avg_mark / students_count, 2)
+            data.append([str(i) + u' семестр', avg_mark])
+    return data
