@@ -6,7 +6,6 @@ from apps.main.models import Teacher, Student, UnivGroup
 from django.utils.translation import ugettext_lazy as _
 from .models_methods import mark_generation
 
-
 DAY_STATUS_CHOICES = (
     ('Monday', _(u'Понедельник')),
     ('Tuesday', _(u'Вторник')),
@@ -60,7 +59,7 @@ class SubjectLiterature(models.Model):
 
 
 class SubjectLecture(models.Model):
-    name = models.CharField(max_length=256, default='Лекция')
+    name = models.TextField(default='Лекция')
     subject = models.ForeignKey(
         Subject,
         on_delete=models.CASCADE,
@@ -78,7 +77,7 @@ class SubjectLecture(models.Model):
 
 
 class SubjectLab(models.Model):
-    name = models.CharField(max_length=256, default='Лабораторная работа')
+    name = models.TextField(default='Лабораторная работа')
     subject = models.ForeignKey(
         Subject,
         on_delete=models.CASCADE,
@@ -116,11 +115,12 @@ class SubjectOfUnivGroup(models.Model):
     group = models.ForeignKey(
         UnivGroup,
         on_delete=models.CASCADE,
-        verbose_name=u'Группа')
+        verbose_name=u'Группа',
+        db_index=True)
     subject = models.ForeignKey(
         Subject,
         on_delete=models.CASCADE,
-        verbose_name=u'Предмет')
+        verbose_name=u'Предмет', )
     start_semester = models.FloatField(
         choices=SEMESTER,
         default=1.0,
@@ -155,7 +155,8 @@ class WeekSchedule(models.Model):
     univ_group = models.ForeignKey(
         UnivGroup,
         on_delete=models.CASCADE,
-        verbose_name=u'Группа')
+        verbose_name=u'Группа',
+        db_index=True)
     subject_numerator = models.ForeignKey(
         SubjectOfUnivGroup,
         related_name=u'числитель',
@@ -178,14 +179,15 @@ class WeekSchedule(models.Model):
     class Meta:
         unique_together = ('day',
                            'lesson_num',
-                           'univ_group')
+                           'subject_numerator',
+                           'subject_denominator')
         ordering = ['day']
         verbose_name_plural = 'Элементы расписания'
         verbose_name = 'Элемент расписания'
 
     def __str__(self):
         return str(self.univ_group.group_name) + '_' + \
-            str(self.day) + '_' + str(self.lesson_num)
+               str(self.day) + '_' + str(self.lesson_num)
 
 
 class GroupExam(models.Model):
@@ -196,7 +198,8 @@ class GroupExam(models.Model):
     univ_group = models.ForeignKey(
         UnivGroup,
         on_delete=models.CASCADE,
-        verbose_name=u'Группа')
+        verbose_name=u'Группа',
+        db_index=True)
     exam_datetime = models.DateTimeField(
         default=timezone.now, verbose_name=u'Дата и время')
     lecture_hall = models.CharField(_(u'Аудитория'), max_length=50)
@@ -250,7 +253,7 @@ class ExamSubjectMark(models.Model):
 
     def __str__(self):
         return self.student.last_name + '_' + \
-            self.subject.subject.name + '_' + str(self.full_mark)
+               self.subject.subject.name + '_' + str(self.full_mark)
 
     def __init__(self, *args, **kwargs):
         super(ExamSubjectMark, self).__init__(*args, **kwargs)
@@ -274,7 +277,10 @@ class StudentSubjectMark(models.Model):
         choices=SEMESTER,
         default=1.0,
         verbose_name=u'Семестр')
-    full_mark = models.IntegerField(default=100, verbose_name=u'Оценка')
+    full_mark = models.IntegerField(default=100, validators=[
+        MaxValueValidator(100),
+        MinValueValidator(1)
+    ], verbose_name=u'Оценка')
     simple_mark = models.IntegerField(
         choices=SIMPLE_MARK,
         default=5,
@@ -300,7 +306,7 @@ class StudentSubjectMark(models.Model):
 
     def __str__(self):
         return self.student.last_name + '_' + \
-            self.subject.subject.name + '_' + str(self.full_mark)
+               self.subject.subject.name + '_' + str(self.full_mark)
 
 
 class TeacherMessage(models.Model):
@@ -312,7 +318,8 @@ class TeacherMessage(models.Model):
     univ_group = models.ForeignKey(
         UnivGroup,
         on_delete=models.CASCADE,
-        verbose_name=u'Группа')
+        verbose_name=u'Группа',
+        db_index=True)
     message = models.TextField(verbose_name=u'Текст')
 
     def __str__(self):

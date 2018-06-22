@@ -59,7 +59,6 @@ class SubjectMaterial(View):
 
     @auth_check
     def get(self, request, subject_pk):
-        student = Student.objects.get(user=request.user)
         subject = Subject.objects.get(pk=subject_pk)
         labs, lectures, literature_list, materials = subject_materials_for_template(
             subject)
