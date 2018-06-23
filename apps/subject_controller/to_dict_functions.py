@@ -48,12 +48,12 @@ def schedule_for_template(schedule_queryset):
     return schedule_list
 
 
-def subject_materials_for_template(group_subject_object):
-    labs = SubjectLab.objects.filter(subject=group_subject_object)
-    lectures = SubjectLecture.objects.filter(subject=group_subject_object)
-    literature = SubjectLiterature.objects.filter(subject=group_subject_object)
+def subject_materials_for_template(subject_object):
+    labs = SubjectLab.objects.filter(subject=subject_object)
+    lectures = SubjectLecture.objects.filter(subject=subject_object)
+    literature = SubjectLiterature.objects.filter(subject=subject_object)
     material = SubjectAdditionalMaterial.objects.filter(
-        subject=group_subject_object)
+        subject=subject_object)
     return labs, lectures, literature, material
 
 

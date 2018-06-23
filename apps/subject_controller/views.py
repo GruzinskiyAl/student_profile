@@ -59,7 +59,7 @@ class SubjectMaterial(View):
 
     @auth_check
     def get(self, request, subject_pk):
-        subject = get_object_or_404(SubjectOfUnivGroup, pk=subject_pk)
+        subject = get_object_or_404(Subject, pk=subject_pk)
         labs, lectures, literature_list, materials = subject_materials_for_template(
             subject)
         return render(request,
