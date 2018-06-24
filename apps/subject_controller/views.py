@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
@@ -59,7 +59,7 @@ class SubjectMaterial(View):
 
     @auth_check
     def get(self, request, subject_pk):
-        subject = Subject.objects.get(pk=subject_pk)
+        subject = get_object_or_404(Subject, pk=subject_pk)
         labs, lectures, literature_list, materials = subject_materials_for_template(
             subject)
         return render(request,
