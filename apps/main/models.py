@@ -7,14 +7,17 @@ from django.utils.translation import ugettext_lazy as _
 
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    position = models.CharField(_(u'Ученая степень'), max_length=150)
+    position = models.CharField(_(u'Должность'), max_length=256)
+    other_position = models.TextField(_(u'Другие должности'), null=True, blank=True)
+    academic_rank = models.CharField(_(u'Ученое звание'), max_length=256, null=True, blank=True)
+    academic_degree = models.CharField(_(u'Ученая степень'), max_length=256, null=True, blank=True)
+    room = models.CharField(_(u'Кабинет'), max_length=10)
     first_name = models.CharField(_(u'Имя'), max_length=150)
     last_name = models.CharField(_(u'Фамилия'), max_length=150)
     patronymic = models.CharField(_(u'Отчество'), max_length=150)
-    t_number = models.CharField(_(u'Номер телефона'), max_length=10)
+    t_number = models.CharField(_(u'Номер телефона'), max_length=10, null=True, blank=True)
     email = models.EmailField(_(u'Почта'), null=True, blank=True)
     photo = models.ImageField(upload_to='user_media', null=True, blank=True)
-    about = models.TextField(_(u'О себе'), blank=True, null=True)
 
     def __str__(self):
         return str(self.last_name) + '_' + \

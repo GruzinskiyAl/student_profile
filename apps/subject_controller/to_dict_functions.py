@@ -1,4 +1,5 @@
 # coding=utf-8
+import random
 from math import trunc
 from operator import itemgetter
 from .models import *
@@ -113,7 +114,7 @@ def group_chart_marks_data(request_student):
             stud_avg_mark = marks.aggregate(Avg('full_mark'))['full_mark__avg']
             if stud_avg_mark:
                 sum_avg_mark += stud_avg_mark
-        if students_count != 0 and marks.count() != 0:
+        if students_count != 0 and StudentSubjectMark.objects.filter(semester=i).count() != 0:
             avg_mark = round(sum_avg_mark / students_count, 2)
             data.append([str(i) + u' семестр', avg_mark])
     return data

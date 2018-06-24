@@ -179,8 +179,7 @@ class WeekSchedule(models.Model):
     class Meta:
         unique_together = ('day',
                            'lesson_num',
-                           'subject_numerator',
-                           'subject_denominator')
+                           )
         ordering = ['day']
         verbose_name_plural = 'Элементы расписания'
         verbose_name = 'Элемент расписания'
@@ -207,7 +206,7 @@ class GroupExam(models.Model):
     class Meta:
         verbose_name_plural = 'Список экзаменов'
         verbose_name = 'Экзамен'
-        unique_together = ('subject', 'univ_group')
+        unique_together = ('subject', 'univ_group', 'exam_datetime')
 
     def __str__(self):
         return str(self.subject.subject.name) + '_' + str(self.exam_datetime)

@@ -13,16 +13,16 @@
 					<img src="{% static 'user.png' %}" class="img-thumbnail"/>
 					{% endif %}
 				</div>
+					<h4>{{teacher.last_name}} {{ teacher.first_name }} {{teacher.patronymic}}</h4>
 					<div class="teacher_info">
-					<h4>{{ teacher.first_name }} {{teacher.last_name}} {{teacher.patronymic}}</h4>
 					<h4><small>
-						<p>{{teacher.position}}</p>
-						<p>{{teacher.t_number}}</p>
-						<p>{{teacher.email}}</p>
-						{% if teacher.about %}
-						<p>О себе:</p>
-						<p>{{teacher.about}}</p>
-						{% endif %}
+						<p>Должность: {{teacher.position}}</p>
+						<p>Другие должности: {{teacher.other_position}}</p>
+						<p>Ученое звание: {{teacher.academic_rank}}</p>
+						<p>Ученая степень: {{teacher.academic_degree}}</p>
+						<p>Номер телефона: {{teacher.t_number}}</p>
+						<p>Почта: {{teacher.email}}</p>
+						<p>Найти можно в: {{teacher.room}}</p>
 					</small></h4>
 					</div>
 				</div>

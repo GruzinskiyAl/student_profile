@@ -14,8 +14,7 @@
 					{% for exam in exam_list %}
 						<tr>
 							<td>{{ exam.subject.subject.name }}</td>
-							<td>{{ exam.subject.subject.teacher.last_name }} {{exam.subject.subject.teacher.first_name}}
-								{{ subject.subject.teacher.patronymic }}</td>
+							<td>{{ exam.subject.subject.teacher.name_initials_string }} </td>
 							<td>{{ exam.lecture_hall }}</td>
 							<td>{{exam.exam_datetime}}</td>
 						</tr>
